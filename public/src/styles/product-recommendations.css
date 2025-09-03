@@ -1,0 +1,419 @@
+/* 产品推荐系统样式 */
+
+.product-recommendations {
+  margin-top: 40px;
+  padding: 30px;
+  background: rgba(218, 165, 32, 0.05);
+  border: 2px solid rgba(218, 165, 32, 0.2);
+  border-radius: 20px;
+  backdrop-filter: blur(10px);
+}
+
+.recommendations-title {
+  text-align: center;
+  color: #DAA520;
+  font-size: 1.8rem;
+  margin-bottom: 30px;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 25px;
+  margin-top: 20px;
+}
+
+.product-card {
+  background: rgba(26, 26, 26, 0.8);
+  border: 2px solid rgba(218, 165, 32, 0.3);
+  border-radius: 15px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative;
+}
+
+.product-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(218, 165, 32, 0.6);
+  box-shadow: 0 10px 30px rgba(218, 165, 32, 0.2);
+}
+
+.product-image {
+  position: relative;
+  height: 200px;
+  overflow: hidden;
+}
+
+.product-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.product-card:hover .product-image img {
+  transform: scale(1.1);
+}
+
+.product-rating {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #FFD700;
+  padding: 5px 10px;
+  border-radius: 15px;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.stars {
+  color: #FFD700;
+}
+
+.rating-number {
+  color: #fff;
+  font-weight: bold;
+}
+
+.product-info {
+  padding: 20px;
+}
+
+.product-name {
+  color: #DAA520;
+  font-size: 1.3rem;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.product-description {
+  color: #f4f4f4;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  margin-bottom: 15px;
+  opacity: 0.9;
+}
+
+.product-benefits {
+  margin-bottom: 15px;
+}
+
+.product-benefits strong {
+  color: #DAA520;
+  font-size: 0.9rem;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.benefits-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.benefit-tag {
+  background: rgba(218, 165, 32, 0.2);
+  color: #DAA520;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  border: 1px solid rgba(218, 165, 32, 0.4);
+}
+
+.match-reasons {
+  margin-bottom: 15px;
+  background: rgba(220, 20, 60, 0.1);
+  border-left: 3px solid #DC143C;
+  padding: 10px;
+  border-radius: 0 8px 8px 0;
+}
+
+.match-reasons strong {
+  color: #DC143C;
+  font-size: 0.9rem;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.match-reasons ul {
+  margin: 0;
+  padding-left: 15px;
+}
+
+.match-reasons li {
+  color: #f4f4f4;
+  font-size: 0.85rem;
+  margin-bottom: 3px;
+}
+
+.product-placement {
+  margin-bottom: 15px;
+}
+
+.product-placement strong {
+  color: #DAA520;
+  font-size: 0.9rem;
+}
+
+.product-placement span {
+  color: #f4f4f4;
+  font-size: 0.9rem;
+}
+
+.product-footer {
+  padding: 15px 20px;
+  background: rgba(218, 165, 32, 0.1);
+  border-top: 1px solid rgba(218, 165, 32, 0.3);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.product-price {
+  color: #DC143C;
+  font-size: 1.4rem;
+  font-weight: bold;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+}
+
+.product-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-learn-more,
+.btn-buy-now {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-learn-more {
+  background: rgba(218, 165, 32, 0.2);
+  color: #DAA520;
+  border: 1px solid rgba(218, 165, 32, 0.5);
+}
+
+.btn-learn-more:hover {
+  background: rgba(218, 165, 32, 0.3);
+  transform: translateY(-2px);
+}
+
+.btn-buy-now {
+  background: linear-gradient(45deg, #DC143C, #FF1493);
+  color: white;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+}
+
+.btn-buy-now:hover {
+  background: linear-gradient(45deg, #FF1493, #DC143C);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(220, 20, 60, 0.4);
+}
+
+.no-recommendations {
+  text-align: center;
+  color: #888;
+  font-size: 1.1rem;
+  padding: 40px;
+  font-style: italic;
+}
+
+/* 产品详情模态框 */
+.product-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+  backdrop-filter: blur(5px);
+}
+
+.modal-content {
+  background: rgba(26, 26, 26, 0.95);
+  border: 2px solid rgba(218, 165, 32, 0.5);
+  border-radius: 20px;
+  max-width: 600px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  position: relative;
+  backdrop-filter: blur(15px);
+}
+
+.close-modal {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  font-size: 2rem;
+  color: #DAA520;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.close-modal:hover {
+  color: #FFD700;
+}
+
+.modal-body {
+  padding: 30px;
+  display: flex;
+  gap: 30px;
+}
+
+.modal-product-image {
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 15px;
+  border: 2px solid rgba(218, 165, 32, 0.3);
+}
+
+.modal-product-info {
+  flex: 1;
+}
+
+.modal-product-info h2 {
+  color: #DAA520;
+  margin-bottom: 15px;
+  font-size: 1.5rem;
+}
+
+.modal-price {
+  color: #DC143C;
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.modal-description {
+  color: #f4f4f4;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.modal-benefits,
+.modal-placement {
+  margin-bottom: 20px;
+}
+
+.modal-benefits h4,
+.modal-placement h4 {
+  color: #DAA520;
+  margin-bottom: 10px;
+}
+
+.modal-benefits ul {
+  color: #f4f4f4;
+  padding-left: 20px;
+}
+
+.modal-placement p {
+  color: #f4f4f4;
+}
+
+.modal-rating {
+  color: #f4f4f4;
+  margin-bottom: 25px;
+}
+
+.modal-rating .stars {
+  color: #FFD700;
+  margin-right: 10px;
+}
+
+.modal-buy-btn {
+  width: 100%;
+  padding: 15px;
+  background: linear-gradient(45deg, #DC143C, #FF1493);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.modal-buy-btn:hover {
+  background: linear-gradient(45deg, #FF1493, #DC143C);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(220, 20, 60, 0.4);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .products-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .product-card {
+    margin: 0 10px;
+  }
+  
+  .product-actions {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .btn-learn-more,
+  .btn-buy-now {
+    width: 100%;
+    text-align: center;
+  }
+  
+  .modal-body {
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .modal-product-image {
+    width: 100%;
+    height: 250px;
+  }
+  
+  .modal-content {
+    width: 95%;
+    margin: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .product-recommendations {
+    margin: 20px 0;
+    padding: 20px;
+  }
+  
+  .recommendations-title {
+    font-size: 1.5rem;
+  }
+  
+  .product-footer {
+    flex-direction: column;
+    gap: 15px;
+    align-items: stretch;
+  }
+  
+  .product-actions {
+    width: 100%;
+  }
+  
+  .modal-body {
+    padding: 20px;
+  }
+} 
