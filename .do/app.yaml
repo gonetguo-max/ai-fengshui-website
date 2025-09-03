@@ -1,0 +1,33 @@
+name: ai-fengshui-website
+services:
+- build_command: npm install
+  environment_slug: node-js
+  github:
+    branch: main
+    deploy_on_push: true
+    repo: gonetguo-max/ai-fengshui-website
+  http_port: 3000
+  instance_count: 1
+  instance_size_slug: basic-xxs
+  name: web
+  routes:
+  - path: /
+  run_command: npm start
+  source_dir: /
+  envs:
+  - key: NODE_ENV
+    value: production
+  - key: DEEPSEEK_API_KEY
+    value: sk-7563dd41016c4329a928d5242d9ad1f2
+    type: SECRET
+  - key: QWEN3_API_KEY
+    value: sk-d1b092b7a3b943eda549cffb0f0e4f20
+    type: SECRET
+  - key: DEEPSEEK_BASE_URL
+    value: https://api.deepseek.com
+  - key: QWEN3_BASE_URL
+    value: https://dashscope.aliyuncs.com/compatible-mode/v1
+alerts:
+- rule: DEPLOYMENT_FAILED
+- rule: DOMAIN_FAILED
+region: nyc

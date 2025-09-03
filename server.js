@@ -949,10 +949,5 @@ process.on('SIGINT', () => {
   process.exit(0);
 });
 
-// 导出用于Vercel无服务器函数
-module.exports = app;
-
-// 本地开发环境下启动服务器
-if (require.main === module) {
-  startServer();
-} 
+// 启动服务器
+startServer(); 
