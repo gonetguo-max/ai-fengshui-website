@@ -813,9 +813,18 @@ app.post('/api/analyze', authenticateUser, upload.single('photo'), async (req, r
 
   } catch (error) {
     console.error('❌ 分析请求失败:', error);
+    console.error('错误堆栈:', error.stack);
+    
+    // 确保返回JSON格式
     res.status(500).json({
       success: false,
-      error: error.message
+      error: error.message || 'Internal server error',
+      debug: {
+        hasDeepSeekKey: !!(process.env.DEEPSEEK_API_KEY),
+        hasQwen3Key: !!(process.env.QWEN3_API_KEY),
+        nodeEnv: process.env.NODE_ENV,
+        timestamp: new Date().toISOString()
+      }
     });
   }
 });
@@ -901,6 +910,7 @@ async function startServer() {
       console.log('✅ 配置验证通过，启用AI分析功能');
     }
 
+    const PORT = process.env.PORT || 3000;
     app.listen(PORT, () => {
       console.log(`
 🚀 AI风水网站服务器启动成功！
@@ -909,6 +919,11 @@ async function startServer() {
 🔮 AI分析: ${isConfigValid ? '已启用 (DeepSeek-R1)' : '演示模式'}
 📁 上传目录: ./uploads/
 ⚙️  环境: ${config.server.env}
+
+🔍 环境变量检查:
+   - DEEPSEEK_API_KEY: ${process.env.DEEPSEEK_API_KEY ? '✅ 已设置' : '❌ 未设置'}
+   - QWEN3_API_KEY: ${process.env.QWEN3_API_KEY ? '✅ 已设置' : '❌ 未设置'}
+   - NODE_ENV: ${process.env.NODE_ENV || 'undefined'}
 
 ${!isConfigValid ? `
 ⚠️  提示: 请配置DeepSeek API密钥以启用真实AI分析
