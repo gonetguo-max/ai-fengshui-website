@@ -2293,16 +2293,10 @@ ${getUpgradeSection(result)}
                 }
             }
             
-            const message = isEn ? 
-                `Upgrade to ${tierNames[tier]} (${prices[tier]})?\n\nThis will redirect you to our secure payment page.` :
-                `升级到${tierNames[tier]} (${prices[tier]})？\n\n将跳转到安全支付页面。`;
-            
-            if (confirm(message)) {
-                // 这里可以集成实际的支付系统
-                // 目前显示一个提示
-                const successMsg = isEn ?
-                    'Payment system integration in progress.\n\nPlease contact support for manual upgrade:\n📧 Email: support@aifengshui.com\n💬 WeChat: fengshui-ai\n\n🚀 Coming Soon: Automatic payment system!' :
-                    '支付系统正在集成中。\n\n请联系客服进行手动升级：\n📧 邮箱：support@aifengshui.com\n💬 微信：fengshui-ai\n\n🚀 Coming Soon: 自动支付系统即将上线！';
+            // 直接显示联系信息，不需要确认框
+            const contactMsg = isEn ?
+                `Upgrade to ${tierNames[tier]} (${prices[tier]})\n\nPayment system integration in progress.\n\nPlease contact support for manual upgrade:\n📧 Email: support@aifengshui.com\n💬 WeChat: fengshui-ai\n\n🚀 Coming Soon: Automatic payment system!` :
+                `升级到${tierNames[tier]} (${prices[tier]})\n\n支付系统正在集成中。\n\n请联系客服进行手动升级：\n📧 邮箱：support@aifengshui.com\n💬 微信：fengshui-ai\n\n🚀 Coming Soon: 自动支付系统即将上线！`;
                 
                 // 创建更友好的弹窗
                 const modal = document.createElement('div');
@@ -2323,7 +2317,7 @@ ${getUpgradeSection(result)}
                             ${isEn ? '🚀 Coming Soon!' : '🚀 即将推出！'}
                         </h3>
                         <p style="line-height: 1.6; margin-bottom: 20px; white-space: pre-line;">
-                            ${successMsg}
+                            ${contactMsg}
                         </p>
                         <button onclick="this.closest('div').parentElement.remove()" style="
                             background: linear-gradient(45deg, #DAA520, #B8860B);
@@ -2339,7 +2333,6 @@ ${getUpgradeSection(result)}
                 
                 // 实际部署时可以替换为:
                 // window.location.href = `/payment?tier=${tier}&price=${prices[tier]}`;
-            }
         }
 
         // 清理文本格式
