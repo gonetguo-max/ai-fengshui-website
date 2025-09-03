@@ -1,22 +1,12 @@
 {
   "version": 2,
-  "name": "fengshui-website",
   "builds": [
     {
       "src": "server.js",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "*.html",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "*.css",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "*.js",
-      "use": "@vercel/static"
+      "use": "@vercel/node",
+      "config": {
+        "maxLambdaSize": "10mb"
+      }
     }
   ],
   "routes": [
@@ -25,15 +15,13 @@
       "dest": "/server.js"
     },
     {
-      "src": "/(.*\\.(css|js|png|jpg|jpeg|gif|svg|ico|html))",
-      "dest": "/$1"
-    },
-    {
       "src": "/(.*)",
-      "dest": "/index.html"
+      "dest": "/server.js"
     }
   ],
-  "env": {
-    "NODE_ENV": "production"
+  "functions": {
+    "server.js": {
+      "maxDuration": 30
+    }
   }
 }
