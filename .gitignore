@@ -11,15 +11,9 @@ yarn-error.log*
 .env.test.local
 .env.production.local
 
-# User uploaded files
-uploads/
-*.jpg
-*.jpeg
-*.png
-*.gif
-*.pdf
-*.docx
-*.mobi
+# User uploaded files (keep uploads directory but ignore content)
+uploads/*
+!uploads/.gitkeep
 
 # System files
 .DS_Store
@@ -87,3 +81,10 @@ CLEANUP_LOG.md
 *.tmp
 *~
 .fuse_hidden*
+
+# Vercel
+.vercel
+
+# Additional Node.js ignores
+.npm
+.eslintcache
