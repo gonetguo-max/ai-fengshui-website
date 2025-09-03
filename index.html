@@ -1202,6 +1202,26 @@
         };
 
         let currentLang = 'zh';
+        
+        // 事件追踪系统
+        function trackEvent(eventName, properties = {}) {
+            const eventData = {
+                event: eventName,
+                timestamp: new Date().toISOString(),
+                userAgent: navigator.userAgent,
+                url: window.location.href,
+                language: currentLang,
+                ...properties
+            };
+            
+            // 保存到本地存储（生产环境应发送到分析服务）
+            const events = JSON.parse(localStorage.getItem('analytics_events') || '[]');
+            events.push(eventData);
+            localStorage.setItem('analytics_events', JSON.stringify(events));
+            
+            // 输出到控制台用于调试
+            console.log('📊 Event Tracked:', eventData);
+        }
 
         // 语言切换函数
         function switchLanguage(lang) {
@@ -1671,6 +1691,20 @@ ${getUpgradeSection(result)}
             resultSection.setAttribute('data-original-result', JSON.stringify(result));
             resultSection.setAttribute('data-result-lang', currentLang);
             
+            // 追踪分析完成事件
+            trackEvent('analysis_completed', { 
+                tier: result.userTier || 'FREE', 
+                score: result.score,
+                hasImage: !!result.formData?.photo 
+            });
+            
+            // 如果是免费用户，显示邮箱收集弹窗
+            if (result.userTier === 'FREE') {
+                setTimeout(() => {
+                    showEmailCollector();
+                }, 3000); // 3秒后显示
+            }
+            
             resultSection.style.display = 'block';
             resultSection.scrollIntoView({ behavior: 'smooth' });
         }
@@ -1895,6 +1929,76 @@ ${getUpgradeSection(result)}
             }
             
             return content;
+        }
+
+        // 邮箱收集功能
+        function showEmailCollector(message) {
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+                background: rgba(0,0,0,0.8); z-index: 10000; display: flex; 
+                justify-content: center; align-items: center;
+            `;
+            
+            const content = document.createElement('div');
+            content.style.cssText = `
+                background: var(--bg-card); padding: 30px; border-radius: 12px;
+                max-width: 450px; width: 90%; text-align: center; border: 2px solid var(--primary-gold);
+            `;
+            
+            content.innerHTML = `
+                <div style="color: var(--primary-gold); font-size: 24px; margin-bottom: 15px;">🚀</div>
+                <h3 style="color: var(--primary-gold); margin-bottom: 15px;">
+                    ${currentLang === 'en' ? 'Get Early Access!' : '抢先体验！'}
+                </h3>
+                <p style="color: var(--text-secondary); margin-bottom: 20px; line-height: 1.5;">
+                    ${message || (currentLang === 'en' ? 
+                        'Be the first to know when paid plans are available!' : 
+                        '付费计划上线时第一时间通知您！')}
+                </p>
+                <input type="email" id="email-collector-input" placeholder="${currentLang === 'en' ? 'Enter your email' : '输入您的邮箱'}" 
+                       style="width: 100%; padding: 12px; border: 1px solid var(--primary-gold); border-radius: 6px; 
+                              background: var(--bg-input); color: var(--text-primary); margin-bottom: 15px;">
+                <div style="display: flex; gap: 10px; justify-content: center;">
+                    <button onclick="collectEmail()" 
+                            style="background: var(--primary-gold); color: var(--bg-primary); border: none; 
+                                   padding: 12px 20px; border-radius: 6px; cursor: pointer; font-weight: bold;">
+                        ${currentLang === 'en' ? 'Notify Me' : '通知我'}
+                    </button>
+                    <button onclick="this.closest('.email-collector-modal').remove()" 
+                            style="background: transparent; color: var(--text-secondary); border: 1px solid var(--text-secondary); 
+                                   padding: 12px 20px; border-radius: 6px; cursor: pointer;">
+                        ${currentLang === 'en' ? 'Maybe Later' : '稍后再说'}
+                    </button>
+                </div>
+            `;
+            
+            modal.className = 'email-collector-modal';
+            modal.appendChild(content);
+            document.body.appendChild(modal);
+        }
+        
+        function collectEmail() {
+            const email = document.getElementById('email-collector-input').value;
+            if (!email || !email.includes('@')) {
+                alert(currentLang === 'en' ? 'Please enter a valid email address' : '请输入有效的邮箱地址');
+                return;
+            }
+            
+            // 记录邮箱到本地存储（生产环境应发送到服务器）
+            const emails = JSON.parse(localStorage.getItem('collected_emails') || '[]');
+            emails.push({
+                email: email,
+                timestamp: new Date().toISOString(),
+                source: 'upgrade_prompt'
+            });
+            localStorage.setItem('collected_emails', JSON.stringify(emails));
+            
+            // 追踪事件
+            trackEvent('email_collected', { source: 'upgrade_prompt' });
+            
+            alert(currentLang === 'en' ? '✅ Thanks! We\'ll notify you soon!' : '✅ 谢谢！我们会尽快通知您！');
+            document.querySelector('.email-collector-modal').remove();
         }
 
         // 生成升级按钮和价格方案

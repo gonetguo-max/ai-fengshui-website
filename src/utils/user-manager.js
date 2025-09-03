@@ -152,7 +152,7 @@ class UserManager {
         if (analysisResult.recommendations) {
           result.recommendations = this.truncateText(analysisResult.recommendations, 200);
         }
-        result.upgradeMessage = '🔓 升级解锁完整专业分析报告';
+        result.upgradeMessage = '🚀 Coming Soon! Professional analysis for $3.99+';
         result.showUpgradePrompt = true;
         break;
 
@@ -162,7 +162,7 @@ class UserManager {
         if (analysisResult.recommendations) {
           result.recommendations = this.truncateText(analysisResult.recommendations, 400);
         }
-        result.upgradeMessage = '🔓 升级至Professional版获取完整布局建议';
+        result.upgradeMessage = '🚀 Coming Soon! Advanced features for $4.99';
         result.showUpgradePrompt = true;
         break;
 
@@ -173,7 +173,7 @@ class UserManager {
         if (analysisResult.importantNotes) {
           result.importantNotes = this.truncateText(analysisResult.importantNotes, 300);
         }
-        result.upgradeMessage = '🔓 升级至Master版获取专业风水提醒';
+        result.upgradeMessage = '🚀 Coming Soon! Master consultation for $29.99';
         result.showUpgradePrompt = true;
         break;
 
