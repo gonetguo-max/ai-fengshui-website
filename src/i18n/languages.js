@@ -222,6 +222,24 @@ export const translations = {
       mainUse: "主要用途",
       exportReport: "📄 导出报告",
       reanalyze: "🔄 重新分析"
+    },
+    
+    // 升级提示信息
+    upgrade: {
+      unlockAnalysis: '解锁完整分析',
+      upgradeToBasic: '升级至Basic版解锁完整朝向分析',
+      upgradeToProfessional: '升级至Professional版解锁详细布局方案',
+      upgradeToMaster: '升级至Master版获取专业风水提醒',
+      upgradeGeneral: '升级解锁更多详细内容',
+      directionPrompt: '\n\n🔓 升级至Basic版($3.99)解锁完整朝向分析',
+      layoutPrompt: '\n\n🔓 升级至Professional版($4.99)解锁详细布局方案',
+      actionPrompt: '\n\n🔓 升级至Professional版($4.99)获取全部改善建议',
+      notesPrompt: '\n\n🔓 升级至Master版($29.99)获取专业风水提醒',
+      contactSupport: '请联系客服进行手动升级',
+      supportEmail: '客服邮箱：support@aifengshui.com',
+      supportWechat: '微信客服：fengshui-ai',
+      getProfessional: '升级至专业版',
+      comingSoon: 'Coming Soon!'
     }
   },
   
@@ -433,6 +451,24 @@ export const translations = {
         analysisError: 'Error occurred during analysis, please try again',
         noResults: 'No analysis results obtained, please check input information'
       }
+    },
+    
+    // Upgrade information
+    upgrade: {
+      unlockAnalysis: 'Unlock Full Analysis',
+      upgradeToBasic: 'Upgrade to Basic for Complete Orientation Analysis',
+      upgradeToProfessional: 'Upgrade to Professional for Detailed Layout Plans',
+      upgradeToMaster: 'Upgrade to Master for Professional Feng Shui Insights',
+      upgradeGeneral: 'Upgrade to unlock more detailed content',
+      directionPrompt: '\n\n🔓 Upgrade to Basic ($3.99) for Complete Orientation Analysis',
+      layoutPrompt: '\n\n🔓 Upgrade to Professional ($4.99) for Detailed Layout Plans',
+      actionPrompt: '\n\n🔓 Upgrade to Professional ($4.99) for Complete Improvement Suggestions',
+      notesPrompt: '\n\n🔓 Upgrade to Master ($29.99) for Professional Feng Shui Insights',
+      contactSupport: 'Please contact support for manual upgrade',
+      supportEmail: 'Support Email: support@aifengshui.com',
+      supportWechat: 'WeChat Support: fengshui-ai',
+      getProfessional: 'Get Professional',
+      comingSoon: 'Coming Soon!'
     }
   }
 };

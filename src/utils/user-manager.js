@@ -211,11 +211,20 @@ class UserManager {
    * @returns {Object} 升级提示
    */
   getUpgradePrompt(userTier) {
+    // 检测语言
+    const isEn = typeof window !== 'undefined' && 
+                 window.i18nManager && 
+                 window.i18nManager.getCurrentLanguage() === 'en';
+    
     const prompts = {
       'FREE': {
         show: true,
-        title: '解锁完整分析',
-        plans: [
+        title: isEn ? 'Unlock Full Analysis' : '解锁完整分析',
+        plans: isEn ? [
+          { name: 'Basic', price: '$3.99', features: ['Complete Orientation Analysis', 'Basic Feng Shui Advice', 'Detailed Score Explanation'] },
+          { name: 'Professional', price: '$4.99', features: ['All Basic Features', 'Detailed Layout Plans', 'Professional Improvement Advice'] },
+          { name: 'Master', price: '$29.99', features: ['All Professional Features', 'Expert Feng Shui Insights', 'Personalized Custom Analysis'] }
+        ] : [
           { name: 'Basic', price: '$3.99', features: ['完整朝向分析', '基础改运建议', '详细评分说明'] },
           { name: 'Professional', price: '$4.99', features: ['全部Basic功能', '详细布局方案', '专业改善建议'] },
           { name: 'Master', price: '$29.99', features: ['全部Professional功能', '专业风水提醒', '个性化定制分析'] }
@@ -223,16 +232,21 @@ class UserManager {
       },
       'BASIC': {
         show: true,
-        title: '升级获得更多功能',
-        plans: [
+        title: isEn ? 'Upgrade for More Features' : '升级获得更多功能',
+        plans: isEn ? [
+          { name: 'Professional', price: '$4.99', features: ['Detailed Layout Plans', 'Professional Improvement Advice', 'Complete Analysis Report'] },
+          { name: 'Master', price: '$29.99', features: ['All Professional Features', 'Expert Feng Shui Insights', 'Personalized Custom Analysis'] }
+        ] : [
           { name: 'Professional', price: '$4.99', features: ['详细布局方案', '专业改善建议', '完整分析报告'] },
           { name: 'Master', price: '$29.99', features: ['全部Professional功能', '专业风水提醒', '个性化定制分析'] }
         ]
       },
       'PROFESSIONAL': {
         show: true,
-        title: '升级至顶级体验',
-        plans: [
+        title: isEn ? 'Upgrade to Premium Experience' : '升级至顶级体验',
+        plans: isEn ? [
+          { name: 'Master', price: '$29.99', features: ['Expert Feng Shui Insights', 'Personalized Custom Analysis', 'Exclusive Consultation Service'] }
+        ] : [
           { name: 'Master', price: '$29.99', features: ['专业风水提醒', '个性化定制分析', '专属咨询服务'] }
         ]
       },

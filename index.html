@@ -1874,13 +1874,34 @@ ${getUpgradeSection(result)}
 
         // 免费版升级提示
         function getFreeVersionPrompt(type) {
-            const messages = {
-                'direction': '\n\n🔓 升级至Basic版($3.99)解锁完整朝向分析',
-                'layout': '\n\n🔓 升级至Professional版($4.99)解锁详细布局方案',
-                'action': '\n\n🔓 升级至Professional版($4.99)获取全部改善建议',
-                'notes': '\n\n🔓 升级至Master版($29.99)获取专业风水提醒'
-            };
-            return messages[type] || '\n\n🔓 升级解锁更多详细内容';
+            const currentLang = window.i18nManager ? window.i18nManager.getCurrentLanguage() : 'zh';
+            
+            // 使用国际化系统
+            function t(key) {
+                if (window.i18nManager) {
+                    return window.i18nManager.t(key);
+                }
+                // 降级处理
+                const fallback = {
+                    'zh': {
+                        'direction': '\n\n🔓 升级至Basic版($3.99)解锁完整朝向分析',
+                        'layout': '\n\n🔓 升级至Professional版($4.99)解锁详细布局方案',
+                        'action': '\n\n🔓 升级至Professional版($4.99)获取全部改善建议',
+                        'notes': '\n\n🔓 升级至Master版($29.99)获取专业风水提醒',
+                        'default': '\n\n🔓 升级解锁更多详细内容'
+                    },
+                    'en': {
+                        'direction': '\n\n🔓 Upgrade to Basic ($3.99) for Complete Orientation Analysis',
+                        'layout': '\n\n🔓 Upgrade to Professional ($4.99) for Detailed Layout Plans',
+                        'action': '\n\n🔓 Upgrade to Professional ($4.99) for Complete Improvement Suggestions',
+                        'notes': '\n\n🔓 Upgrade to Master ($29.99) for Professional Feng Shui Insights',
+                        'default': '\n\n🔓 Upgrade to unlock more detailed content'
+                    }
+                };
+                return fallback[currentLang] && fallback[currentLang][key] ? fallback[currentLang][key] : fallback[currentLang]['default'];
+            }
+            
+            return t(type);
         }
 
         // 智能提取朝向分析
@@ -2280,9 +2301,41 @@ ${getUpgradeSection(result)}
                 // 这里可以集成实际的支付系统
                 // 目前显示一个提示
                 const successMsg = isEn ?
-                    'Payment system integration in progress.\nPlease contact support for manual upgrade.' :
-                    '支付系统正在集成中。\n请联系客服进行手动升级。';
-                alert(successMsg);
+                    'Payment system integration in progress.\n\nPlease contact support for manual upgrade:\n📧 Email: support@aifengshui.com\n💬 WeChat: fengshui-ai\n\n🚀 Coming Soon: Automatic payment system!' :
+                    '支付系统正在集成中。\n\n请联系客服进行手动升级：\n📧 邮箱：support@aifengshui.com\n💬 微信：fengshui-ai\n\n🚀 Coming Soon: 自动支付系统即将上线！';
+                
+                // 创建更友好的弹窗
+                const modal = document.createElement('div');
+                modal.style.cssText = `
+                    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+                    background: rgba(0,0,0,0.8); z-index: 10000;
+                    display: flex; justify-content: center; align-items: center;
+                `;
+                
+                modal.innerHTML = `
+                    <div style="
+                        background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+                        padding: 30px; border-radius: 15px; max-width: 400px; 
+                        color: #f4f4f4; text-align: center; border: 2px solid #DAA520;
+                        box-shadow: 0 10px 30px rgba(218, 165, 32, 0.3);
+                    ">
+                        <h3 style="color: #DAA520; margin-bottom: 20px;">
+                            ${isEn ? '🚀 Coming Soon!' : '🚀 即将推出！'}
+                        </h3>
+                        <p style="line-height: 1.6; margin-bottom: 20px; white-space: pre-line;">
+                            ${successMsg}
+                        </p>
+                        <button onclick="this.closest('div').parentElement.remove()" style="
+                            background: linear-gradient(45deg, #DAA520, #B8860B);
+                            color: white; border: none; padding: 10px 20px;
+                            border-radius: 25px; cursor: pointer; font-weight: bold;
+                        ">
+                            ${isEn ? 'Got it!' : '我知道了'}
+                        </button>
+                    </div>
+                `;
+                
+                document.body.appendChild(modal);
                 
                 // 实际部署时可以替换为:
                 // window.location.href = `/payment?tier=${tier}&price=${prices[tier]}`;
