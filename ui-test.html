@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UI测试页面</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #0F1419; color: white; }
+        .test-section { margin: 20px 0; padding: 20px; border: 1px solid #333; border-radius: 8px; }
+        .mobile-test { background: #1A1F2E; padding: 15px; }
+        .form-test { background: #212936; padding: 20px; border-radius: 8px; }
+        .form-group { margin: 10px 0; }
+        label { display: block; margin-bottom: 5px; color: #94A3B8; }
+        input, select, textarea { 
+            width: 100%; 
+            padding: 10px; 
+            background: #2A3441; 
+            border: 1px solid #444; 
+            border-radius: 4px; 
+            color: white;
+        }
+        button { 
+            padding: 12px 24px; 
+            background: #DAA520; 
+            color: white; 
+            border: none; 
+            border-radius: 4px; 
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .result-box { 
+            background: #2A3441; 
+            padding: 15px; 
+            margin: 10px 0; 
+            border-radius: 8px; 
+            min-height: 100px;
+        }
+        @media (max-width: 768px) {
+            body { margin: 10px; }
+            .test-section { padding: 15px; }
+        }
+    </style>
+</head>
+<body>
+    <h1>🏮 风水网站UI测试</h1>
+    
+    <div class="test-section">
+        <h2>📱 移动端响应式测试</h2>
+        <div class="mobile-test">
+            <p>请调整浏览器窗口大小测试响应式布局</p>
+            <button onclick="testMobile()">测试移动端兼容性</button>
+            <div id="mobile-result" class="result-box"></div>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>📝 表单交互测试</h2>
+        <div class="form-test">
+            <div class="form-group">
+                <label>房屋类型</label>
+                <select id="houseType">
+                    <option>住宅</option>
+                    <option>商业</option>
+                    <option>办公</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>朝向</label>
+                <select id="direction">
+                    <option>东</option>
+                    <option>南</option>
+                    <option>西</option>
+                    <option>北</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>关注问题</label>
+                <textarea id="concerns" rows="3" placeholder="请描述您的风水关注点"></textarea>
+            </div>
+            <button onclick="testAPI()">🔮 测试AI分析</button>
+            <div id="api-result" class="result-box"></div>
+        </div>
+    </div>
+
+    <script>
+        function testMobile() {
+            const width = window.innerWidth;
+            const result = document.getElementById('mobile-result');
+            
+            if (width <= 768) {
+                result.innerHTML = `
+                    <h3>✅ 移动端检测</h3>
+                    <p>当前宽度: ${width}px</p>
+                    <p>状态: 移动端布局已激活</p>
+                `;
+            } else {
+                result.innerHTML = `
+                    <h3>🖥️ 桌面端检测</h3>
+                    <p>当前宽度: ${width}px</p>
+                    <p>状态: 桌面端布局正常</p>
+                `;
+            }
+        }
+
+        async function testAPI() {
+            const resultBox = document.getElementById('api-result');
+            resultBox.innerHTML = '<p>⏳ 正在分析中...</p>';
+            
+            try {
+                const data = {
+                    houseType: document.getElementById('houseType').value,
+                    direction: document.getElementById('direction').value,
+                    concerns: document.getElementById('concerns').value || '财运'
+                };
+
+                const response = await fetch('/api/analyze', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    resultBox.innerHTML = `
+                        <h3>✅ 分析完成</h3>
+                        <p><strong>评分:</strong> ${result.data.score}分</p>
+                        <p><strong>等级:</strong> ${result.data.gradeInfo.level}</p>
+                        <p><strong>模型:</strong> ${result.data.model}</p>
+                        <p><strong>响应时间:</strong> ${new Date().toLocaleTimeString()}</p>
+                        <div style="max-height: 150px; overflow-y: auto; margin-top: 10px; background: #1A1F2E; padding: 10px; border-radius: 4px;">
+                            <small>${result.data.analysis.substring(0, 200)}...</small>
+                        </div>
+                    `;
+                } else {
+                    resultBox.innerHTML = `<p>❌ 分析失败: ${result.message}</p>`;
+                }
+            } catch (error) {
+                resultBox.innerHTML = `<p>❌ 连接错误: ${error.message}</p>`;
+            }
+        }
+
+        // 页面加载时自动测试移动端
+        window.onload = () => {
+            testMobile();
+            console.log('🧪 UI测试页面已加载');
+        };
+
+        // 监听窗口大小变化
+        window.onresize = testMobile;
+    </script>
+</body>
+</html>

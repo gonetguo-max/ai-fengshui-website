@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>多语言功能测试页面</title>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d1810 100%);
+            color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(218, 165, 32, 0.1);
+            border-radius: 15px;
+            padding: 30px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+        .form-group {
+            margin: 15px 0;
+        }
+        .form-label {
+            display: block;
+            margin-bottom: 5px;
+            color: #DAA520;
+            font-weight: bold;
+        }
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid rgba(218, 165, 32, 0.3);
+            border-radius: 8px;
+            background: rgba(26, 26, 26, 0.8);
+            color: #f4f4f4;
+            font-size: 1rem;
+        }
+        .test-button {
+            background: linear-gradient(45deg, #DAA520, #FFD700);
+            color: #1a1a1a;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        .test-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(218, 165, 32, 0.4);
+        }
+        .language-switcher {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 data-i18n="hero.title">AI风水分析助手</h1>
+        <p data-i18n="hero.subtitle">传统智慧与现代科技的完美结合</p>
+        
+        <div class="test-section">
+            <h2 data-i18n="form.title">🔮 AI风水智能分析</h2>
+            
+            <div class="form-group">
+                <label class="form-label" data-i18n="form.propertyType">🏠 房屋类型</label>
+                <select class="form-select">
+                    <option value="" data-i18n="form.propertyTypePlaceholder">请选择房屋类型</option>
+                    <option value="住宅" data-i18n="form.propertyTypeOptions.residential">住宅</option>
+                    <option value="办公室" data-i18n="form.propertyTypeOptions.office">办公室</option>
+                    <option value="商铺" data-i18n="form.propertyTypeOptions.shop">商铺</option>
+                    <option value="工厂" data-i18n="form.propertyTypeOptions.factory">工厂</option>
+                    <option value="其他" data-i18n="form.propertyTypeOptions.other">其他</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label" data-i18n="form.direction">🧭 房屋朝向</label>
+                <select class="form-select">
+                    <option value="" data-i18n="form.directionPlaceholder">请选择主要朝向</option>
+                    <option value="正北" data-i18n="form.directionOptions.north">正北 (坎卦)</option>
+                    <option value="东北" data-i18n="form.directionOptions.northeast">东北 (艮卦)</option>
+                    <option value="正东" data-i18n="form.directionOptions.east">正东 (震卦)</option>
+                    <option value="东南" data-i18n="form.directionOptions.southeast">东南 (巽卦)</option>
+                    <option value="正南" data-i18n="form.directionOptions.south">正南 (离卦)</option>
+                    <option value="西南" data-i18n="form.directionOptions.southwest">西南 (坤卦)</option>
+                    <option value="正西" data-i18n="form.directionOptions.west">正西 (兑卦)</option>
+                    <option value="西北" data-i18n="form.directionOptions.northwest">西北 (乾卦)</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label" data-i18n="form.area">📏 房屋面积 (平方米)</label>
+                <input type="number" class="form-input" data-i18n="form.areaPlaceholder" placeholder="例如：120" min="10" max="10000">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label" data-i18n="form.floorPlan">🏗️ 户型布局</label>
+                <input type="text" class="form-input" data-i18n="form.floorPlanPlaceholder" placeholder="例如：三室两厅一卫">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label" data-i18n="form.concerns">❓ 特殊关注点或问题描述</label>
+                <textarea class="form-textarea" data-i18n="form.concernsPlaceholder" placeholder="请描述您想要改善的具体问题，如：财运不佳、睡眠质量差、工作不顺等..."></textarea>
+            </div>
+            
+            <button class="test-button" data-i18n="form.submitButton">🔮 开始AI深度分析</button>
+        </div>
+        
+        <div class="test-section">
+            <h3>测试功能</h3>
+            <button class="test-button" onclick="testLanguageSwitch()">切换到英文</button>
+            <button class="test-button" onclick="testLanguageSwitch('zh')">切换到中文</button>
+            <button class="test-button" onclick="showCurrentLanguage()">显示当前语言</button>
+        </div>
+    </div>
+
+    <!-- 引入多语言系统 -->
+    <script type="module">
+        import i18nManager from './src/utils/i18n-manager.js';
+        
+        // 初始化多语言系统
+        i18nManager.init();
+        
+        // 暴露到全局作用域用于测试
+        window.i18nManager = i18nManager;
+        
+        // 测试函数
+        window.testLanguageSwitch = function(lang = 'en') {
+            console.log('切换语言到:', lang);
+            i18nManager.switchLanguage(lang);
+        };
+        
+        window.showCurrentLanguage = function() {
+            const currentLang = i18nManager.getCurrentLanguage();
+            alert('当前语言: ' + currentLang);
+            console.log('当前语言:', currentLang);
+        };
+        
+        // 监听语言切换事件
+        document.addEventListener('languageChanged', (event) => {
+            console.log('语言切换事件触发:', event.detail);
+        });
+    </script>
+</body>
+</html> 

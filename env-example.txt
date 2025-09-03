@@ -1,0 +1,28 @@
+# AI风水网站环境变量配置示例
+# 复制此文件为 .env 并填写真实的API密钥
+
+# DeepSeek API配置 (主力模型)
+DEEPSEEK_API_KEY=sk-your-deepseek-api-key-here
+DEEPSEEK_BASE_URL=https://api.deepseek.com
+DEEPSEEK_DEFAULT_MODEL=deepseek-reasoner
+
+# Qwen3 API配置 (备选模型)  
+QWEN3_API_KEY=sk-d1b092b7a3b943eda549cffb0f0e4f20
+QWEN3_BASE_URL=https://dashscope.aliyuncs.com/compatible-mode/v1
+QWEN3_DEFAULT_MODEL=qwen-max
+
+# 服务器配置
+PORT=3000
+NODE_ENV=development
+
+# AI模型选择策略
+AI_PRIMARY_PROVIDER=deepseek
+AI_FALLBACK_PROVIDER=qwen3
+AI_ENABLE_FALLBACK=true
+AI_SPEED_TEST_MODE=false
+AI_PARALLEL_ANALYSIS=false
+
+# 风水分析配置
+FENGSHUI_MAX_ANALYSIS_LENGTH=2000
+FENGSHUI_MAX_API_CALLS=100
+FENGSHUI_CACHE_TIMEOUT=3600 

@@ -1,0 +1,1061 @@
+name: "AI风水分析视频自动生成器"
+description: "基于AI风水分析结果自动生成短视频内容，支持多平台发布"
+version: "1.0"
+category: "content_creation"
+
+# Dify工作流配置
+workflow:
+  # 输入变量定义
+  inputs:
+    feng_shui_analysis:
+      type: "object"
+      description: "风水分析结果数据"
+      required: true
+      properties:
+        score:
+          type: "number"
+          description: "风水评分 (0-100)"
+        level:
+          type: "string"
+          description: "风水等级"
+        summary:
+          type: "string"
+          description: "分析摘要"
+        suggestions:
+          type: "array"
+          description: "改善建议列表"
+        room_type:
+          type: "string"
+          description: "房间类型"
+        direction:
+          type: "string"
+          description: "房屋朝向"
+        areas:
+          type: "object"
+          description: "六区域详细分析"
+    
+    video_style:
+      type: "string"
+      description: "视频风格"
+      default: "professional"
+      options: ["professional", "casual", "trendy"]
+    
+    target_platforms:
+      type: "array"
+      description: "目标发布平台"
+      default: ["douyin", "xiaohongshu", "kuaishou"]
+
+  # 工作流节点
+  nodes:
+    # 1. 开始节点
+    start:
+      type: "start"
+      id: "start_node"
+      outputs:
+        - "feng_shui_analysis"
+        - "video_style" 
+        - "target_platforms"
+
+    # 2. 内容策略分析器
+    content_strategy_analyzer:
+      type: "llm"
+      id: "content_analyzer"
+      depends_on: ["start"]
+      config:
+        model: "gpt-4"
+        temperature: 0.7
+        max_tokens: 1200
+        system_prompt: |
+          你是一位专业的短视频内容策略专家，擅长风水领域的内容创作。
+          你需要根据风水分析结果，制定适合不同平台的内容策略。
+          
+          你的任务是：
+          1. 分析风水数据的亮点和痛点
+          2. 确定最佳的内容角度
+          3. 设计吸引人的标题
+          4. 规划60秒视频的结构
+        
+        user_prompt: |
+          请基于以下风水分析结果，设计一个60秒短视频的内容策略：
+          
+          ## 风水分析数据
+          {{feng_shui_analysis}}
+          
+          ## 视频风格偏好
+          {{video_style}}
+          
+          ## 目标平台
+          {{target_platforms}}
+          
+          请输出以下内容：
+          
+          ### 1. 内容角度分析
+          - 主要卖点：（最吸引人的点）
+          - 目标受众：（谁会对这个内容感兴趣）
+          - 情绪定位：（积极/中性/警示）
+          
+          ### 2. 视频标题建议
+          - 抖音版标题：（吸引眼球，带话题性）
+          - 小红书标题：（实用导向，带美学感）
+          - 快手版标题：（接地气，强调价值）
+          
+          ### 3. 视频结构规划
+          - 开场 (0-5秒)：如何抓住注意力
+          - 主体 (5-50秒)：核心内容展示
+          - 结尾 (50-60秒)：行动号召
+          
+          ### 4. 关键信息提取
+          - 核心评分：{{feng_shui_analysis.score}}分
+          - 主要问题：列出1-2个关键问题
+          - 解决方案：对应的改善建议
+          - 预期效果：改善后的积极变化
+
+    # 3. 脚本生成器
+    script_generator:
+      type: "llm"
+      id: "script_writer"
+      depends_on: ["content_analyzer"]
+      config:
+        model: "gpt-4"
+        temperature: 0.8
+        max_tokens: 1500
+        system_prompt: |
+          你是一位专业的短视频脚本编剧，专门创作风水内容。
+          你需要将内容策略转化为具体的视频脚本。
+          
+          脚本要求：
+          - 语言生动，易于理解
+          - 节奏紧凑，信息密度高
+          - 包含互动元素
+          - 适合配音和字幕
+        
+        user_prompt: |
+          基于以下内容策略，创作一个60秒的视频脚本：
+          
+          ## 内容策略
+          {{content_analyzer.output}}
+          
+          ## 原始数据
+          {{feng_shui_analysis}}
+          
+          请按以下格式输出脚本：
+          
+          ### 视频脚本
+          
+          **开场 (0-5秒)**
+          [画面描述] 
+          [旁白内容]
+          [字幕文字]
+          
+          **主体部分 (5-50秒)**
+          [画面描述]
+          [旁白内容] 
+          [字幕文字]
+          [互动提示]
+          
+          **结尾 (50-60秒)**
+          [画面描述]
+          [旁白内容]
+          [字幕文字]
+          [行动号召]
+          
+          ### 配套要素
+          - 背景音乐风格：
+          - 画面转场效果：
+          - 重点标注文字：
+          - 互动问题设计：
+          
+          ### 平台适配建议
+          - 抖音版重点：
+          - 小红书版重点：
+          - 快手版重点：
+
+    # 4. 视觉设计生成器
+    visual_design_generator:
+      type: "llm"
+      id: "visual_designer"
+      depends_on: ["script_writer"]
+      config:
+        model: "gpt-4"
+        temperature: 0.9
+        max_tokens: 1000
+        system_prompt: |
+          你是一位专业的视觉设计师，专门为风水短视频设计视觉方案。
+          你需要根据脚本内容，设计详细的视觉呈现方案。
+        
+        user_prompt: |
+          基于以下视频脚本，设计视觉呈现方案：
+          
+          ## 视频脚本
+          {{script_writer.output}}
+          
+          ## 风水数据
+          评分：{{feng_shui_analysis.score}}分
+          等级：{{feng_shui_analysis.level}}
+          房型：{{feng_shui_analysis.room_type}}
+          朝向：{{feng_shui_analysis.direction}}
+          
+          请设计以下视觉元素：
+          
+          ### 1. 色彩方案
+          - 主色调：（基于风水评分选择）
+          - 辅助色：
+          - 背景色：
+          
+          ### 2. 画面构图
+          - 开场画面设计
+          - 主体内容布局
+          - 信息展示方式
+          
+          ### 3. 动画效果
+          - 文字出现方式
+          - 图表动画效果
+          - 转场动画建议
+          
+          ### 4. 字体与排版
+          - 标题字体
+          - 正文字体
+          - 强调文字样式
+          
+          ### 5. 图标符号
+          - 风水相关图标
+          - 评分展示图形
+          - 方向指示符号
+
+    # 5. AI图像提示词生成器
+    image_prompt_generator:
+      type: "code"
+      id: "image_prompts"
+      depends_on: ["visual_designer"]
+      config:
+        language: "python"
+        code: |
+          import json
+          import re
+          
+          def generate_image_prompts(visual_design, feng_shui_data, script_content):
+              """生成AI图像的详细提示词"""
+              
+              # 提取关键信息
+              score = feng_shui_data.get('score', 70)
+              level = feng_shui_data.get('level', '中等')
+              room_type = feng_shui_data.get('room_type', '住宅')
+              direction = feng_shui_data.get('direction', '南')
+              
+              # 根据评分确定视觉风格
+              if score >= 80:
+                  mood = "bright, prosperous, golden light, harmonious"
+                  energy = "positive, flowing, abundant"
+              elif score >= 60:
+                  mood = "balanced, natural, soft lighting, peaceful"
+                  energy = "stable, gentle, harmonious"
+              else:
+                  mood = "needs improvement, hope, transformation, gentle"
+                  energy = "potential, growth, positive change"
+              
+              # 生成各类图像提示词
+              prompts = {
+                  "background_main": {
+                      "prompt": f"Modern Chinese feng shui {room_type} interior, {mood}, cinematic lighting, professional photography, 4K quality, feng shui principles, {energy} energy flow",
+                      "style": "realistic, professional, architectural photography",
+                      "aspect_ratio": "9:16",
+                      "usage": "main_background"
+                  },
+                  
+                  "feng_shui_overlay": {
+                      "prompt": f"Traditional Chinese feng shui symbols, bagua octagon, five elements, directional compass pointing {direction}, golden lines, mystical energy patterns, transparent overlay",
+                      "style": "traditional Chinese art, golden accents, spiritual",
+                      "aspect_ratio": "9:16", 
+                      "usage": "overlay_graphics"
+                  },
+                  
+                  "score_visualization": {
+                      "prompt": f"Feng shui score meter showing {score} points, circular progress bar, Chinese traditional design, gold and red colors, elegant numbers, professional dashboard",
+                      "style": "modern UI design, Chinese aesthetics",
+                      "aspect_ratio": "1:1",
+                      "usage": "score_display"
+                  },
+                  
+                  "direction_compass": {
+                      "prompt": f"Ancient Chinese feng shui compass (Luopan), bronze and gold, pointing {direction} direction, mystical symbols, traditional craftsmanship, detailed engravings",
+                      "style": "traditional Chinese artifacts, detailed, mystical",
+                      "aspect_ratio": "1:1",
+                      "usage": "direction_indicator"
+                  },
+                  
+                  "improvement_elements": {
+                      "prompt": "Feng shui improvement items, green plants, crystals, mirrors, water features, traditional Chinese decorations, modern minimalist style, clean background",
+                      "style": "product photography, clean, modern",
+                      "aspect_ratio": "16:9",
+                      "usage": "suggestion_items"
+                  },
+                  
+                  "before_after": {
+                      "prompt": f"Split screen comparison, {room_type} before and after feng shui improvement, dramatic lighting difference, {mood} on improved side, professional interior design",
+                      "style": "architectural visualization, dramatic lighting",
+                      "aspect_ratio": "16:9",
+                      "usage": "comparison_visual"
+                  }
+              }
+              
+              # 添加风格指导
+              style_guide = {
+                  "color_palette": {
+                      "primary": "#DAA520",  # 金色
+                      "secondary": "#8B4513",  # 棕色
+                      "accent": "#CD853F",   # 秘鲁色
+                      "background": "#2F4F4F"  # 暗青色
+                  },
+                  "visual_principles": [
+                      "Use golden ratio proportions",
+                      "Incorporate traditional Chinese elements",
+                      "Maintain professional, trustworthy appearance",
+                      "Balance modern and traditional aesthetics",
+                      "Ensure mobile-friendly composition (9:16)"
+                  ],
+                  "avoid": [
+                      "Overly bright or flashy colors",
+                      "Western religious symbols", 
+                      "Cluttered compositions",
+                      "Inappropriate cultural elements"
+                  ]
+              }
+              
+              return {
+                  "image_prompts": prompts,
+                  "style_guide": style_guide,
+                  "generation_settings": {
+                      "quality": "high",
+                      "style": "photorealistic",
+                      "lighting": "professional",
+                      "composition": "rule_of_thirds"
+                  }
+              }
+          
+          # 执行函数
+          result = generate_image_prompts(
+              visual_designer.output,
+              feng_shui_analysis, 
+              script_writer.output
+          )
+          
+          output = json.dumps(result, ensure_ascii=False, indent=2)
+
+    # 6. 视频结构组装器
+    video_composer:
+      type: "code"
+      id: "video_structure"
+      depends_on: ["script_writer", "image_prompts"]
+      config:
+        language: "python"
+        code: |
+          import json
+          from datetime import datetime
+          
+          def create_video_composition(script, image_prompts, feng_shui_data):
+              """创建完整的视频构成结构"""
+              
+              # 解析脚本内容（简化版解析）
+              script_content = script
+              
+              # 基础视频配置
+              video_config = {
+                  "format": "mp4",
+                  "resolution": "1080x1920",  # 竖屏
+                  "fps": 30,
+                  "duration": 60,
+                  "quality": "high"
+              }
+              
+              # 场景构成
+              scenes = [
+                  {
+                      "id": "opening",
+                      "start_time": 0,
+                      "duration": 5,
+                      "elements": [
+                          {
+                              "type": "background_video",
+                              "source": "generated_image",
+                              "prompt": image_prompts["image_prompts"]["background_main"]["prompt"],
+                              "animation": "slow_zoom_in",
+                              "duration": 5
+                          },
+                          {
+                              "type": "text_overlay",
+                              "content": f"风水评分：{feng_shui_data.get('score', 0)}分",
+                              "style": {
+                                  "font": "PingFang SC Bold",
+                                  "size": 48,
+                                  "color": "#DAA520",
+                                  "position": "center_top",
+                                  "background": "rgba(0,0,0,0.6)",
+                                  "padding": 20
+                              },
+                              "animation": "fade_in_from_top",
+                              "start_time": 0.5,
+                              "duration": 4
+                          },
+                          {
+                              "type": "text_overlay", 
+                              "content": "专业AI风水分析",
+                              "style": {
+                                  "font": "PingFang SC",
+                                  "size": 32,
+                                  "color": "#FFFFFF",
+                                  "position": "center",
+                                  "animation": "typewriter"
+                              },
+                              "start_time": 1.5,
+                              "duration": 3
+                          }
+                      ],
+                      "audio": {
+                          "voiceover": "开场旁白内容",
+                          "background_music": "traditional_chinese_peaceful",
+                          "volume": 0.3
+                      }
+                  },
+                  
+                  {
+                      "id": "main_content",
+                      "start_time": 5,
+                      "duration": 45,
+                      "elements": [
+                          {
+                              "type": "background_video",
+                              "source": "generated_image",
+                              "prompt": image_prompts["image_prompts"]["background_main"]["prompt"],
+                              "animation": "parallax_scroll",
+                              "duration": 45
+                          },
+                          {
+                              "type": "overlay_graphics",
+                              "source": "generated_image", 
+                              "prompt": image_prompts["image_prompts"]["feng_shui_overlay"]["prompt"],
+                              "opacity": 0.4,
+                              "animation": "gentle_float",
+                              "duration": 45
+                          },
+                          {
+                              "type": "score_meter",
+                              "source": "generated_image",
+                              "prompt": image_prompts["image_prompts"]["score_visualization"]["prompt"],
+                              "position": "top_right",
+                              "animation": "count_up_to_score",
+                              "start_time": 2,
+                              "duration": 8
+                          },
+                          {
+                              "type": "direction_compass",
+                              "source": "generated_image",
+                              "prompt": image_prompts["image_prompts"]["direction_compass"]["prompt"], 
+                              "position": "bottom_left",
+                              "animation": "rotate_to_direction",
+                              "start_time": 5,
+                              "duration": 10
+                          },
+                          {
+                              "type": "improvement_showcase",
+                              "source": "generated_image",
+                              "prompt": image_prompts["image_prompts"]["improvement_elements"]["prompt"],
+                              "position": "center_bottom",
+                              "animation": "slide_in_sequence",
+                              "start_time": 15,
+                              "duration": 20
+                          },
+                          {
+                              "type": "scrolling_text",
+                              "content": feng_shui_data.get('suggestions', []),
+                              "style": {
+                                  "font": "PingFang SC",
+                                  "size": 28,
+                                  "color": "#FFFFFF",
+                                  "background": "rgba(0,0,0,0.8)",
+                                  "padding": 15,
+                                  "line_height": 1.4
+                              },
+                              "position": "bottom_center", 
+                              "animation": "scroll_up",
+                              "start_time": 10,
+                              "duration": 30
+                          }
+                      ],
+                      "audio": {
+                          "voiceover": "主要内容旁白",
+                          "background_music": "continue",
+                          "sound_effects": ["page_turn", "gentle_chime"]
+                      }
+                  },
+                  
+                  {
+                      "id": "call_to_action",
+                      "start_time": 50,
+                      "duration": 10,
+                      "elements": [
+                          {
+                              "type": "gradient_background",
+                              "colors": ["#DAA520", "#B8860B", "#2F4F4F"],
+                              "animation": "gentle_pulse",
+                              "duration": 10
+                          },
+                          {
+                              "type": "main_cta_text",
+                              "content": "立即获取专业风水分析",
+                              "style": {
+                                  "font": "PingFang SC Bold",
+                                  "size": 40,
+                                  "color": "#FFFFFF",
+                                  "position": "center",
+                                  "shadow": "0 4px 8px rgba(0,0,0,0.5)"
+                              },
+                              "animation": "bounce_in",
+                              "start_time": 1,
+                              "duration": 8
+                          },
+                          {
+                              "type": "qr_code",
+                              "content": "https://your-website.com",
+                              "position": "bottom_center",
+                              "size": 120,
+                              "animation": "fade_in_scale",
+                              "start_time": 2,
+                              "duration": 7
+                          },
+                          {
+                              "type": "website_url", 
+                              "content": "AI风水大师官网",
+                              "style": {
+                                  "font": "PingFang SC",
+                                  "size": 24,
+                                  "color": "#F0F0F0",
+                                  "position": "below_qr"
+                              },
+                              "start_time": 3,
+                              "duration": 6
+                          }
+                      ],
+                      "audio": {
+                          "voiceover": "行动号召旁白",
+                          "background_music": "crescendo_finish",
+                          "sound_effects": ["success_chime"]
+                      }
+                  }
+              ]
+              
+              # 导出配置
+              export_settings = {
+                  "watermark": {
+                      "text": "AI风水大师",
+                      "position": "bottom_right",
+                      "opacity": 0.7,
+                      "font": "PingFang SC",
+                      "size": 16,
+                      "color": "#DAA520"
+                  },
+                  "captions": {
+                      "enable": True,
+                      "font": "PingFang SC",
+                      "size": 32,
+                      "color": "#FFFFFF",
+                      "background": "rgba(0,0,0,0.7)",
+                      "position": "bottom_center"
+                  },
+                  "metadata": {
+                      "title": f"风水评分{feng_shui_data.get('score', 0)}分的{feng_shui_data.get('room_type', '住宅')}分析",
+                      "description": f"专业AI风水分析：{feng_shui_data.get('summary', '详细分析报告')}",
+                      "tags": ["风水", "AI分析", "居家布局", "运势", feng_shui_data.get('room_type', '住宅')],
+                      "category": "education_lifestyle"
+                  }
+              }
+              
+              return {
+                  "video_config": video_config,
+                  "scenes": scenes,
+                  "export_settings": export_settings,
+                  "total_duration": 60,
+                  "created_at": datetime.now().isoformat()
+              }
+          
+          # 执行函数
+          result = create_video_composition(
+              script_writer.output,
+              image_prompts.output,
+              feng_shui_analysis
+          )
+          
+          output = json.dumps(result, ensure_ascii=False, indent=2)
+
+    # 7. 平台适配优化器
+    platform_optimizer:
+      type: "code"
+      id: "platform_versions"
+      depends_on: ["video_structure"]
+      config:
+        language: "python"
+        code: |
+          import json
+          import copy
+          
+          def optimize_for_platforms(base_video, target_platforms, feng_shui_data):
+              """为不同平台优化视频内容"""
+              
+              platform_configs = {
+                  "douyin": {
+                      "name": "抖音",
+                      "optimization": {
+                          "hook_duration": 3,  # 前3秒极其重要
+                          "text_style": "bold_impact",
+                          "color_scheme": "high_contrast",
+                          "trending_elements": True,
+                          "music_sync": True
+                      },
+                      "content_focus": "entertainment_viral",
+                      "audience": "18-35岁都市年轻人",
+                      "posting_tips": [
+                          "使用热门音乐BGM",
+                          "标题要有悬念和冲突",
+                          "前3秒必须有视觉冲击",
+                          "适当添加网红元素"
+                      ]
+                  },
+                  
+                  "xiaohongshu": {
+                      "name": "小红书",
+                      "optimization": {
+                          "aesthetic_priority": True,
+                          "detailed_info": True,
+                          "lifestyle_focus": True,
+                          "clean_design": True
+                      },
+                      "content_focus": "practical_aesthetic",
+                      "audience": "25-40岁精致女性",
+                      "posting_tips": [
+                          "封面图要精美有吸引力",
+                          "内容要实用且美观",
+                          "多用emoji和标签",
+                          "强调生活品质提升"
+                      ]
+                  },
+                  
+                  "kuaishou": {
+                      "name": "快手",
+                      "optimization": {
+                          "authentic_feel": True,
+                          "practical_value": True,
+                          "down_to_earth": True,
+                          "family_friendly": True
+                      },
+                      "content_focus": "practical_authentic",
+                      "audience": "25-50岁三四线城市",
+                      "posting_tips": [
+                          "语言要接地气",
+                          "强调实用价值",
+                          "案例要贴近生活",
+                          "价格要实惠亲民"
+                      ]
+                  }
+              }
+              
+              optimized_versions = {}
+              
+              for platform in target_platforms:
+                  if platform not in platform_configs:
+                      continue
+                      
+                  config = platform_configs[platform]
+                  platform_video = copy.deepcopy(base_video)
+                  
+                  # 平台特定优化
+                  if platform == "douyin":
+                      # 抖音：强化开场效果
+                      opening_scene = platform_video["scenes"][0]
+                      
+                      # 添加强冲击开场
+                      opening_scene["elements"].insert(0, {
+                          "type": "shock_text",
+                          "content": f"震惊！这套房子风水评分竟然{feng_shui_data.get('score', 0)}分！",
+                          "style": {
+                              "font": "PingFang SC Black",
+                              "size": 52,
+                              "color": "#FF6B35",
+                              "stroke": "#FFFFFF",
+                              "position": "center",
+                              "animation": "flash_attention"
+                          },
+                          "start_time": 0,
+                          "duration": 2.5
+                      })
+                      
+                      # 添加热门标签
+                      platform_video["export_settings"]["metadata"]["tags"].extend([
+                          "震惊", "必看", "涨知识", "神秘"
+                      ])
+                  
+                  elif platform == "xiaohongshu":
+                      # 小红书：优化美学和实用性
+                      for scene in platform_video["scenes"]:
+                          for element in scene["elements"]:
+                              if element.get("type") == "text_overlay":
+                                  # 小红书文字更精美
+                                  element["style"]["background"] = "rgba(255,255,255,0.9)"
+                                  element["style"]["color"] = "#333333"
+                                  element["style"]["border_radius"] = 12
+                                  element["style"]["shadow"] = "0 4px 12px rgba(0,0,0,0.1)"
+                      
+                      # 添加生活化标签
+                      platform_video["export_settings"]["metadata"]["tags"].extend([
+                          "居家好物", "生活tips", "家居设计", "品质生活"
+                      ])
+                  
+                  elif platform == "kuaishou":
+                      # 快手：强调实用和亲民
+                      for scene in platform_video["scenes"]:
+                          for element in scene["elements"]:
+                              if element.get("type") == "text_overlay":
+                                  # 快手文字更朴实
+                                  if "专业AI" in element.get("content", ""):
+                                      element["content"] = element["content"].replace("专业AI", "智能")
+                      
+                      # 添加实用标签
+                      platform_video["export_settings"]["metadata"]["tags"].extend([
+                          "实用", "省钱", "居家妙招", "老百姓"
+                      ])
+                  
+                  # 设置平台特定信息
+                  platform_video["platform_info"] = {
+                      "platform": platform,
+                      "platform_name": config["name"],
+                      "optimization_applied": config["optimization"],
+                      "target_audience": config["audience"],
+                      "content_focus": config["content_focus"],
+                      "posting_tips": config["posting_tips"]
+                  }
+                  
+                  optimized_versions[platform] = platform_video
+              
+              return optimized_versions
+          
+          # 执行优化
+          result = optimize_for_platforms(
+              video_structure.output,
+              target_platforms,
+              feng_shui_analysis
+          )
+          
+          output = json.dumps(result, ensure_ascii=False, indent=2)
+
+    # 8. 内容发布计划器
+    content_scheduler:
+      type: "code"
+      id: "publishing_calendar"
+      depends_on: ["platform_versions"]
+      config:
+        language: "python"
+        code: |
+          import json
+          from datetime import datetime, timedelta
+          import random
+          
+          def generate_publishing_calendar(platform_versions, feng_shui_data):
+              """生成7天内容发布计划"""
+              
+              today = datetime.now()
+              calendar = []
+              
+              # 平台发布时间配置
+              platform_schedules = {
+                  "douyin": {
+                      "frequency": 3,  # 每周3次
+                      "best_times": ["08:30", "12:30", "19:00", "21:30"],
+                      "peak_days": [1, 3, 5, 6]  # 周二、四、六、日
+                  },
+                  "xiaohongshu": {
+                      "frequency": 2,  # 每周2次  
+                      "best_times": ["10:00", "14:00", "19:30", "21:00"],
+                      "peak_days": [0, 2, 4, 6]  # 周一、三、五、日
+                  },
+                  "kuaishou": {
+                      "frequency": 2,  # 每周2次
+                      "best_times": ["12:00", "18:30", "20:00", "22:00"], 
+                      "peak_days": [2, 4, 5, 6]  # 周三、五、六、日
+                  }
+              }
+              
+              schedule_id = 1
+              
+              for platform, video_data in platform_versions.items():
+                  if platform not in platform_schedules:
+                      continue
+                      
+                  schedule = platform_schedules[platform]
+                  platform_info = video_data.get("platform_info", {})
+                  
+                  # 为该平台安排发布时间
+                  posts_scheduled = 0
+                  day_offset = 0
+                  
+                  while posts_scheduled < schedule["frequency"] and day_offset < 7:
+                      post_date = today + timedelta(days=day_offset)
+                      weekday = post_date.weekday()
+                      
+                      # 检查是否是该平台的推荐发布日
+                      if weekday in schedule["peak_days"]:
+                          # 选择最佳发布时间
+                          time_slot = random.choice(schedule["best_times"])
+                          
+                          # 生成内容变体
+                          content_variant = generate_content_variant(
+                              feng_shui_data, 
+                              platform, 
+                              posts_scheduled + 1
+                          )
+                          
+                          calendar_item = {
+                              "id": schedule_id,
+                              "date": post_date.strftime("%Y-%m-%d"),
+                              "time": time_slot,
+                              "platform": platform,
+                              "platform_name": platform_info.get("platform_name", platform),
+                              "content": {
+                                  "title": content_variant["title"],
+                                  "description": content_variant["description"],
+                                  "hashtags": content_variant["hashtags"],
+                                  "video_config": video_data.get("video_config"),
+                                  "special_notes": content_variant["notes"]
+                              },
+                              "targeting": {
+                                  "audience": platform_info.get("target_audience", ""),
+                                  "content_focus": platform_info.get("content_focus", ""),
+                                  "optimization_tips": platform_info.get("posting_tips", [])
+                              },
+                              "status": "scheduled",
+                              "priority": get_priority(platform, weekday, time_slot)
+                          }
+                          
+                          calendar.append(calendar_item)
+                          posts_scheduled += 1
+                          schedule_id += 1
+                      
+                      day_offset += 1
+              
+              # 按日期和时间排序
+              calendar.sort(key=lambda x: f"{x['date']} {x['time']}")
+              
+              # 生成总结报告
+              summary = {
+                  "total_posts": len(calendar),
+                  "platforms_count": len(platform_versions),
+                  "date_range": {
+                      "start": calendar[0]["date"] if calendar else "",
+                      "end": calendar[-1]["date"] if calendar else ""
+                  },
+                  "platform_distribution": {
+                      platform: len([item for item in calendar if item["platform"] == platform])
+                      for platform in platform_versions.keys()
+                  },
+                  "weekly_frequency": {
+                      "douyin": platform_schedules.get("douyin", {}).get("frequency", 0),
+                      "xiaohongshu": platform_schedules.get("xiaohongshu", {}).get("frequency", 0), 
+                      "kuaishou": platform_schedules.get("kuaishou", {}).get("frequency", 0)
+                  }
+              }
+              
+              return {
+                  "publishing_calendar": calendar,
+                  "summary": summary,
+                  "automation_suggestions": [
+                      "使用社交媒体管理工具定时发布",
+                      "准备一周的视觉素材",
+                      "监控发布后的数据表现",
+                      "根据数据反馈调整发布策略",
+                      "建立用户互动回复模板"
+                  ],
+                  "success_metrics": {
+                      "engagement_rate": "目标 >5%",
+                      "completion_rate": "目标 >70%",
+                      "website_clicks": "目标每周 >100次",
+                      "new_followers": "目标每周 >500人"
+                  }
+              }
+          
+          def generate_content_variant(feng_shui_data, platform, variant_num):
+              """为同一内容生成不同的发布变体"""
+              
+              score = feng_shui_data.get("score", 70)
+              room_type = feng_shui_data.get("room_type", "住宅")
+              level = feng_shui_data.get("level", "中等")
+              
+              variants = {
+                  "douyin": [
+                      {
+                          "title": f"震惊！{room_type}风水评分{score}分意味着什么？",
+                          "description": f"专业AI分析揭秘：{level}格局的{room_type}如何影响运势",
+                          "hashtags": ["#风水秘密", "#运势分析", "#震惊", "#必看"],
+                          "notes": "使用热门BGM，前3秒要有强冲击"
+                      },
+                      {
+                          "title": f"不看后悔！{room_type}的风水禁忌大揭秘",
+                          "description": f"AI大师告诉你：为什么这个{room_type}只有{score}分",
+                          "hashtags": ["#风水禁忌", "#家居布局", "#涨知识", "#实用"],
+                          "notes": "重点突出禁忌和解决方案"
+                      },
+                      {
+                          "title": f"3分钟教你看{room_type}风水！准到离谱",
+                          "description": f"从{score}分看出的问题，你家也可能有！",
+                          "hashtags": ["#风水教学", "#居家技巧", "#准到离谱", "#学会了"],
+                          "notes": "教学向内容，互动性强"
+                      }
+                  ],
+                  
+                  "xiaohongshu": [
+                      {
+                          "title": f"🏠 {room_type}风水分析｜{score}分的真相",
+                          "description": f"✨ 专业AI深度解析 {level}风水格局\n🔍 详细改善建议分享\n💫 让家更有灵气的秘密",
+                          "hashtags": ["#风水分析", "#家居设计", "#居家好物", "#生活美学"],
+                          "notes": "注重美观和实用性，多用emoji"
+                      },
+                      {
+                          "title": f"💡 {room_type}布局优化指南｜实测有效",
+                          "description": f"🎯 AI分析评分{score}分\n📋 专业改善方案分享\n🌟 让运势UP UP的小技巧",
+                          "hashtags": ["#家居布局", "#装修灵感", "#居家技巧", "#品质生活"],
+                          "notes": "强调实用价值和美学效果"
+                      }
+                  ],
+                  
+                  "kuaishou": [
+                      {
+                          "title": f"老师傅教你看{room_type}风水，{score}分不算高！",
+                          "description": f"传统风水智慧+AI分析，教你简单实用的改善方法",
+                          "hashtags": ["#风水知识", "#实用技巧", "#老师傅", "#居家妙招"],
+                          "notes": "用接地气的语言，强调传统智慧"
+                      },
+                      {
+                          "title": f"花小钱改{room_type}风水，效果立竿见影！",
+                          "description": f"不花大钱也能改善风水，{score}分提升到90分的秘密",
+                          "hashtags": ["#省钱妙招", "#居家改造", "#实用", "#效果好"],
+                          "notes": "强调性价比和实际效果"
+                      }
+                  ]
+              }
+              
+              platform_variants = variants.get(platform, variants["douyin"])
+              variant_index = (variant_num - 1) % len(platform_variants)
+              return platform_variants[variant_index]
+          
+          def get_priority(platform, weekday, time):
+              """计算发布优先级"""
+              priority_score = 0
+              
+              # 平台权重
+              if platform == "douyin":
+                  priority_score += 3
+              elif platform == "xiaohongshu":
+                  priority_score += 2
+              else:
+                  priority_score += 1
+              
+              # 时间权重
+              if time in ["19:00", "20:00", "21:00"]:
+                  priority_score += 2
+              elif time in ["12:00", "12:30"]:
+                  priority_score += 1
+              
+              # 周几权重
+              if weekday in [4, 5, 6]:  # 周五、六、日
+                  priority_score += 1
+              
+              if priority_score >= 5:
+                  return "high"
+              elif priority_score >= 3:
+                  return "medium"
+              else:
+                  return "low"
+          
+          # 执行函数
+          result = generate_publishing_calendar(
+              platform_versions.output,
+              feng_shui_analysis
+          )
+          
+          output = json.dumps(result, ensure_ascii=False, indent=2)
+
+    # 9. 输出节点
+    output:
+      type: "output"
+      id: "final_output"
+      depends_on: ["publishing_calendar"]
+      outputs:
+        video_script: "{{script_writer.output}}"
+        visual_design: "{{visual_designer.output}}"
+        image_prompts: "{{image_prompts.output}}"
+        video_composition: "{{video_structure.output}}"
+        platform_versions: "{{platform_versions.output}}"
+        publishing_schedule: "{{publishing_calendar.output}}"
+
+  # 触发器配置
+  triggers:
+    webhook:
+      enabled: true
+      url_path: "/webhook/video-generation"
+      method: "POST"
+      description: "风水分析完成后自动触发视频生成"
+    
+    scheduled:
+      enabled: false
+      cron: "0 10 * * *"
+      description: "每日上午10点自动生成内容"
+
+  # 全局设置
+  settings:
+    timeout: 300
+    retry_attempts: 3
+    parallel_execution: false
+    error_handling: "continue_on_error"
+    logging_level: "info"
+
+# 使用说明
+usage:
+  description: "将此YAML文件导入Dify平台，配置API密钥后即可使用"
+  
+  setup_steps:
+    - "在Dify平台创建新的工作流"
+    - "导入此YAML配置文件"
+    - "配置OpenAI API密钥"
+    - "配置图像生成服务API"
+    - "测试工作流执行"
+    - "连接网站Webhook触发"
+  
+  input_example:
+    feng_shui_analysis:
+      score: 78
+      level: "中吉格局"
+      summary: "整体风水格局良好，财位明确，需要注意卧室门对厕所门的问题"
+      suggestions: ["在卧室门挂门帘遮挡", "在财位摆放绿色植物", "调整床头朝向"]
+      room_type: "三室一厅"
+      direction: "坐北朝南"
+      areas:
+        score_area: {"score": 8, "description": "评分良好"}
+        direction_area: {"score": 9, "description": "朝向极佳"}
+        layout_area: {"score": 7, "description": "布局合理"}
+    
+    video_style: "professional"
+    target_platforms: ["douyin", "xiaohongshu", "kuaishou"]
+  
+  expected_output:
+    - "3个平台优化的视频脚本"
+    - "详细的视觉设计方案"
+    - "AI图像生成提示词集合"
+    - "完整的60秒视频构成"
+    - "7天内容发布日历"
+    - "平台特定优化建议"
+
+# 成本估算
+cost_estimation:
+  monthly_usage: "假设每日生成3条视频内容"
+  api_calls:
+    openai_gpt4: "约900次调用/月，预计$45-90"
+    image_generation: "约540张图片/月，预计$27-54"
+  total_estimated_cost: "$72-144/月"
+  
+  compared_to_coze: "比Coze节省约¥200/月，成本优势明显"

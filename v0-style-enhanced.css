@@ -1,0 +1,454 @@
+/* 
+🎨 v0.dev风格现代化升级样式
+基于用户提供的参考设计，优化现有界面
+应用方式: 在index.html中引入此CSS文件
+*/
+
+/* ===== 1. 基础样式增强 ===== */
+
+/* 更现代化的字体和行高 */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Microsoft YaHei', '微软雅黑', sans-serif !important;
+    line-height: 1.6;
+    font-weight: 400;
+}
+
+/* 标题字体优化 */
+.hero-title, .form-title, .recommendations-title, h1, h2, h3 {
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    line-height: 1.2;
+}
+
+/* ===== 2. 背景升级 ===== */
+
+/* 主背景升级为更柔和的v0.dev风格渐变 */
+body {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d1810 100%) !important;
+    /* v0.dev风格的叠加层 */
+    background-image: 
+        radial-gradient(circle at 20% 80%, rgba(218, 165, 32, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(220, 20, 60, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(59, 130, 246, 0.05) 0%, transparent 50%) !important;
+}
+
+/* Hero区域渐变优化 */
+.hero-section {
+    background: linear-gradient(135deg, 
+        rgba(26, 26, 26, 0.95) 0%, 
+        rgba(45, 24, 16, 0.95) 50%, 
+        rgba(26, 26, 26, 0.95) 100%
+    ) !important;
+    position: relative;
+    backdrop-filter: blur(20px);
+    border-radius: 24px;
+    margin-bottom: 2rem;
+    padding: 3rem 2rem;
+}
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to bottom right, 
+        rgba(251, 191, 36, 0.05) 0%, 
+        transparent 50%, 
+        rgba(59, 130, 246, 0.05) 100%
+    );
+    pointer-events: none;
+    border-radius: 24px;
+    z-index: -1;
+}
+
+/* ===== 3. 表单区域升级 ===== */
+
+/* 分析表单区域现代化 */
+.form-section, .analysis-section {
+    background: rgba(26, 26, 26, 0.9) !important;
+    border: 1px solid rgba(218, 165, 32, 0.2) !important;
+    border-radius: 24px !important;
+    padding: 2.5rem !important;
+    backdrop-filter: blur(20px) !important;
+    box-shadow: 
+        0 4px 6px -1px rgba(0, 0, 0, 0.1),
+        0 2px 4px -1px rgba(0, 0, 0, 0.06),
+        0 0 0 1px rgba(218, 165, 32, 0.05) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    margin-bottom: 2rem;
+}
+
+.form-section:hover, .analysis-section:hover {
+    transform: translateY(-2px);
+    box-shadow: 
+        0 20px 25px -5px rgba(0, 0, 0, 0.2),
+        0 10px 10px -5px rgba(0, 0, 0, 0.1),
+        0 0 0 1px rgba(218, 165, 32, 0.1);
+    border-color: rgba(218, 165, 32, 0.3) !important;
+}
+
+/* ===== 4. 表单元素优化 ===== */
+
+/* 输入框现代化 */
+.form-input, .form-select, .form-textarea, input, select, textarea {
+    background: linear-gradient(135deg, #4a4a4a 0%, #3a3a3a 100%) !important;
+    border: 2px solid #f59e0b !important;
+    border-radius: 8px !important;
+    color: #ffffff !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    padding: 12px 16px !important;
+    min-height: 48px !important;
+    transition: all 0.2s ease !important;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    position: relative !important;
+    z-index: 1000 !important;
+    appearance: menulist !important;
+    -webkit-appearance: menulist !important;
+    -moz-appearance: menulist !important;
+}
+
+.form-input:focus, .form-select:focus, .form-textarea:focus, input:focus, select:focus, textarea:focus {
+    outline: 3px solid rgba(245, 158, 11, 0.3) !important;
+    border-color: #fbbf24 !important;
+    box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.1) !important;
+    background: linear-gradient(135deg, #5a5a5a 0%, #4a4a4a 100%) !important;
+    transform: translateY(-1px);
+}
+
+/* 优化选择框选项显示 */
+select option {
+    background-color: #2d2d2d !important;
+    color: #ffffff !important;
+    padding: 0.5rem !important;
+    font-weight: 500 !important;
+}
+
+select option:hover, select option:focus {
+    background-color: #f59e0b !important;
+    color: #000000 !important;
+}
+
+/* ===== 5. 按钮系统升级 ===== */
+
+/* 主要按钮CTA升级 */
+.btn, .analyze-button, #analyze-btn, button[type="submit"] {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+    border: none !important;
+    border-radius: 12px !important;
+    padding: 1rem 2rem !important;
+    font-weight: 600 !important;
+    font-size: 1.1rem !important;
+    color: white !important;
+    box-shadow: 
+        0 4px 14px 0 rgba(245, 158, 11, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    cursor: pointer !important;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn:hover, .analyze-button:hover, #analyze-btn:hover, button[type="submit"]:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 
+        0 8px 25px 0 rgba(245, 158, 11, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+    background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%) !important;
+}
+
+.btn:active, .analyze-button:active, #analyze-btn:active, button[type="submit"]:active {
+    transform: translateY(0) !important;
+    box-shadow: 
+        0 4px 14px 0 rgba(245, 158, 11, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+}
+
+/* 导出按钮优化 */
+.export-btn {
+    background: linear-gradient(135deg, var(--primary-gold), #ffcc00) !important;
+    color: var(--bg-primary) !important;
+    border: none !important;
+    padding: 8px 12px !important;
+    border-radius: 8px !important;
+    font-size: 0.85rem !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 2px 6px rgba(218, 165, 32, 0.3) !important;
+    white-space: nowrap;
+    display: flex !important;
+    align-items: center;
+    gap: 4px;
+}
+
+.export-btn:hover {
+    background: linear-gradient(135deg, #ffcc00, var(--primary-gold)) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 12px rgba(218, 165, 32, 0.4) !important;
+}
+
+/* ===== 6. 结果区域升级 ===== */
+
+/* 分析结果卡片现代化 */
+#result-section, .result-section {
+    background: rgba(26, 26, 26, 0.9) !important;
+    border: 1px solid rgba(218, 165, 32, 0.2) !important;
+    border-radius: 20px !important;
+    padding: 2rem !important;
+    margin-top: 2rem !important;
+    backdrop-filter: blur(10px) !important;
+    box-shadow: 
+        0 4px 6px -1px rgba(0, 0, 0, 0.1),
+        0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+    transition: all 0.3s ease !important;
+}
+
+#result-section:hover, .result-section:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* 结果内容区域 */
+#result-content {
+    background: rgba(42, 42, 42, 0.8) !important;
+    border-radius: 16px !important;
+    padding: 2rem !important;
+    backdrop-filter: blur(5px);
+}
+
+/* ===== 7. 进度指示器升级 ===== */
+
+/* 进度容器现代化 */
+.progress-card, #progress-container {
+    background: rgba(26, 26, 26, 0.9) !important;
+    padding: 30px !important;
+    border-radius: 12px !important;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1) !important;
+    border: 1px solid rgba(218, 165, 32, 0.2) !important;
+    text-align: center;
+    backdrop-filter: blur(20px) !important;
+}
+
+/* 进度条美化 */
+.progress-bar {
+    width: 100%;
+    height: 8px;
+    background: rgba(218, 165, 32, 0.2) !important;
+    border-radius: 4px !important;
+    margin: 20px 0 !important;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary-gold) 0%, #ffcc00 100%) !important;
+    border-radius: 4px !important;
+    width: 0%;
+    transition: width 0.8s ease !important;
+    animation: progressShimmer 2s infinite;
+}
+
+@keyframes progressShimmer {
+    0% { background-position: -200px 0; }
+    100% { background-position: calc(200px + 100%) 0; }
+}
+
+/* 进度步骤美化 */
+.progress-steps {
+    display: flex;
+    justify-content: space-between;
+    margin: 25px 0;
+    gap: 10px;
+}
+
+.progress-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    opacity: 0.5;
+    transition: all 0.5s ease;
+}
+
+.progress-step.active {
+    opacity: 1;
+    transform: scale(1.05);
+}
+
+.step-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(218, 165, 32, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2em;
+    margin-bottom: 8px;
+    transition: all 0.3s ease;
+}
+
+.progress-step.active .step-icon {
+    background: var(--primary-gold) !important;
+    color: var(--bg-primary) !important;
+    animation: pulseIcon 1.5s infinite;
+}
+
+@keyframes pulseIcon {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+/* ===== 8. 响应式优化 ===== */
+
+/* 移动端优化 */
+@media (max-width: 768px) {
+    /* 容器间距调整 */
+    .container {
+        padding: 0 1rem !important;
+    }
+    
+    /* Hero区域调整 */
+    .hero-section {
+        padding: 2rem 1.5rem !important;
+        border-radius: 16px !important;
+    }
+    
+    /* 表单区域调整 */
+    .form-section, .analysis-section {
+        padding: 1.5rem !important;
+        border-radius: 16px !important;
+        margin: 1rem 0 !important;
+    }
+    
+    /* 按钮调整 */
+    .btn, .analyze-button, #analyze-btn, button[type="submit"] {
+        width: 100% !important;
+        padding: 1rem !important;
+        font-size: 1rem !important;
+    }
+    
+    /* 导出控件调整 */
+    #export-controls {
+        flex-wrap: wrap !important;
+        justify-content: center !important;
+        width: 100% !important;
+        margin-top: 10px !important;
+    }
+    
+    .export-btn {
+        font-size: 0.75rem !important;
+        padding: 6px 10px !important;
+        flex: 1;
+        min-width: 70px;
+        justify-content: center;
+    }
+    
+    /* 进度指示器移动端优化 */
+    .progress-card, #progress-container {
+        padding: 20px !important;
+        margin: 0 10px !important;
+    }
+    
+    .progress-steps {
+        gap: 5px !important;
+    }
+    
+    .step-icon {
+        width: 35px !important;
+        height: 35px !important;
+        font-size: 1rem !important;
+    }
+    
+    .step-text {
+        font-size: 0.75rem !important;
+    }
+}
+
+/* 平板端优化 */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .hero-section {
+        padding: 2.5rem !important;
+    }
+    
+    .form-section, .analysis-section {
+        padding: 2rem !important;
+    }
+}
+
+/* ===== 9. 动画增强 ===== */
+
+/* 页面加载动画 */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translate3d(0, 30px, 0);
+    }
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+.form-section.animate, .analysis-section.animate {
+    animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 微交互动画 */
+.form-group {
+    transition: all 0.2s ease;
+}
+
+.form-group:hover {
+    transform: translateX(2px);
+}
+
+/* ===== 10. 辅助样式 ===== */
+
+/* 文本选择美化 */
+::selection {
+    background: rgba(218, 165, 32, 0.3);
+    color: #fff;
+}
+
+::-moz-selection {
+    background: rgba(218, 165, 32, 0.3);
+    color: #fff;
+}
+
+/* 占位符文本美化 */
+::placeholder {
+    color: rgba(244, 244, 244, 0.5) !important;
+    opacity: 1;
+}
+
+::-webkit-input-placeholder {
+    color: rgba(244, 244, 244, 0.5) !important;
+}
+
+::-moz-placeholder {
+    color: rgba(244, 244, 244, 0.5) !important;
+    opacity: 1;
+}
+
+:-ms-input-placeholder {
+    color: rgba(244, 244, 244, 0.5) !important;
+}
+
+/* ===== 应用说明 ===== */
+/*
+使用方法:
+1. 在index.html的<head>标签中添加:
+   <link rel="stylesheet" href="v0-style-enhanced.css">
+
+2. 或者将这些样式直接复制到现有的<style>标签中
+
+3. 为了更好的效果，可以为表单区域添加动画类:
+   document.querySelector('.form-section').classList.add('animate');
+
+4. 确保现有的JavaScript功能不受影响
+*/

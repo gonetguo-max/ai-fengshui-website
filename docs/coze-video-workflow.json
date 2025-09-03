@@ -1,0 +1,707 @@
+{
+  "workflow": {
+    "name": "AI风水分析视频自动生成器",
+    "description": "基于AI风水分析结果自动生成短视频内容，用于社交媒体推广",
+    "version": "1.0",
+    "category": "content_creation",
+    "nodes": [
+      {
+        "id": "start_node",
+        "type": "start",
+        "name": "开始节点",
+        "position": {"x": 100, "y": 100},
+        "config": {
+          "input_schema": {
+            "feng_shui_analysis": {
+              "type": "object",
+              "description": "风水分析结果数据",
+              "properties": {
+                "score": {"type": "number", "description": "风水评分"},
+                "level": {"type": "string", "description": "风水等级"},
+                "summary": {"type": "string", "description": "分析摘要"},
+                "suggestions": {"type": "array", "description": "改善建议"},
+                "room_type": {"type": "string", "description": "房间类型"},
+                "direction": {"type": "string", "description": "朝向"},
+                "areas": {"type": "object", "description": "六区域分析"}
+              }
+            },
+            "video_style": {
+              "type": "string",
+              "enum": ["professional", "casual", "trending"],
+              "default": "professional",
+              "description": "视频风格"
+            }
+          }
+        }
+      },
+      {
+        "id": "content_analyzer",
+        "type": "llm",
+        "name": "内容分析器",
+        "position": {"x": 300, "y": 100},
+        "config": {
+          "model": "gpt-4",
+          "temperature": 0.7,
+          "max_tokens": 1000,
+          "system_prompt": "你是一位专业的风水内容创作专家，擅长将复杂的风水分析转化为吸引人的短视频内容。你需要根据分析结果生成适合社交媒体的文案和视频脚本。",
+          "user_prompt": "基于以下风水分析结果，生成一个60秒短视频的脚本：\n\n分析结果：{{feng_shui_analysis}}\n视频风格：{{video_style}}\n\n请生成：\n1. 吸引人的标题\n2. 开场白（5秒）\n3. 核心内容（45秒）\n4. 结尾呼吁（10秒）\n5. 关键标签建议\n\n要求：\n- 语言简洁易懂\n- 突出实用价值\n- 符合抖音/小红书风格\n- 包含互动元素"
+        }
+      },
+      {
+        "id": "script_formatter",
+        "type": "code",
+        "name": "脚本格式化",
+        "position": {"x": 500, "y": 100},
+        "config": {
+          "language": "javascript",
+          "code": `
+function formatVideoScript(llmOutput) {
+  try {
+    // 解析LLM输出，提取结构化信息
+    const lines = llmOutput.split('\\n').filter(line => line.trim());
+    
+    let title = '';
+    let opening = '';
+    let content = '';
+    let ending = '';
+    let tags = [];
+    
+    let currentSection = '';
+    
+    for (const line of lines) {
+      if (line.includes('标题') || line.includes('title')) {
+        currentSection = 'title';
+        title = line.replace(/.*[:：]/, '').trim();
+      } else if (line.includes('开场') || line.includes('opening')) {
+        currentSection = 'opening';
+        opening = line.replace(/.*[:：]/, '').trim();
+      } else if (line.includes('核心内容') || line.includes('content')) {
+        currentSection = 'content';
+        content = line.replace(/.*[:：]/, '').trim();
+      } else if (line.includes('结尾') || line.includes('ending')) {
+        currentSection = 'ending';
+        ending = line.replace(/.*[:：]/, '').trim();
+      } else if (line.includes('标签') || line.includes('tags')) {
+        currentSection = 'tags';
+        const tagText = line.replace(/.*[:：]/, '').trim();
+        tags = tagText.split(/[,，#\\s]+/).filter(tag => tag.trim());
+      } else if (currentSection && line.trim()) {
+        // 继续当前section的内容
+        switch(currentSection) {
+          case 'opening':
+            opening += ' ' + line.trim();
+            break;
+          case 'content':
+            content += ' ' + line.trim();
+            break;
+          case 'ending':
+            ending += ' ' + line.trim();
+            break;
+        }
+      }
+    }
+    
+    return {
+      title: title || '专业风水分析结果',
+      script: {
+        opening: opening || '大家好，今天为大家分析一个风水案例',
+        content: content || '根据专业AI分析，这个空间的风水格局...',
+        ending: ending || '关注我，获取更多风水知识！'
+      },
+      tags: tags.length > 0 ? tags : ['风水', 'AI分析', '居家布局', '运势'],
+      duration: 60,
+      style: 'professional'
+    };
+  } catch (error) {
+    console.error('Script formatting error:', error);
+    return {
+      title: 'AI风水分析',
+      script: {
+        opening: '专业AI风水分析为您解读',
+        content: '让我们一起看看这个空间的风水密码',
+        ending: '点赞关注，获取更多风水智慧'
+      },
+      tags: ['风水', 'AI', '分析'],
+      duration: 60,
+      style: 'professional'
+    };
+  }
+}
+
+return formatVideoScript(content_analyzer.output);
+          `
+        }
+      },
+      {
+        "id": "visual_generator",
+        "type": "llm",
+        "name": "视觉元素生成器",
+        "position": {"x": 300, "y": 300},
+        "config": {
+          "model": "gpt-4",
+          "temperature": 0.8,
+          "max_tokens": 800,
+          "system_prompt": "你是一位专业的视频视觉设计师，擅长为风水内容创建视觉元素描述。你需要生成详细的视觉指导，包括场景、动画、文字效果等。",
+          "user_prompt": "基于以下视频脚本，生成详细的视觉设计方案：\n\n脚本：{{script_formatter.output}}\n风水数据：{{feng_shui_analysis}}\n\n请生成：\n1. 背景设计建议\n2. 文字动画效果\n3. 图标和符号使用\n4. 色彩搭配方案\n5. 转场效果建议\n\n要求：\n- 符合风水主题美学\n- 适合短视频格式\n- 突出关键信息\n- 增强视觉吸引力"
+        }
+      },
+      {
+        "id": "image_prompt_generator",
+        "type": "code",
+        "name": "图像提示词生成",
+        "position": {"x": 500, "y": 300},
+        "config": {
+          "language": "javascript",
+          "code": `
+function generateImagePrompts(visualDesign, analysisData) {
+  const score = analysisData.score || 0;
+  const level = analysisData.level || '平和';
+  const roomType = analysisData.room_type || '居室';
+  
+  // 根据风水评分选择基础风格
+  let baseStyle = '';
+  if (score >= 80) {
+    baseStyle = 'elegant, harmonious, golden light, prosperity symbols';
+  } else if (score >= 60) {
+    baseStyle = 'balanced, natural, soft lighting, peaceful atmosphere';
+  } else {
+    baseStyle = 'needs improvement, gentle colors, hope symbols, transformation';
+  }
+  
+  const prompts = [
+    {
+      type: 'background',
+      prompt: \`Modern Chinese feng shui interior design, \${roomType}, \${baseStyle}, cinematic lighting, 4K quality, professional photography style\`,
+      usage: 'main_background'
+    },
+    {
+      type: 'overlay',
+      prompt: \`Feng shui symbols, bagua elements, Chinese traditional patterns, golden ratio lines, mystical energy flow, transparent overlay\`,
+      usage: 'graphic_overlay'
+    },
+    {
+      type: 'score_visual',
+      prompt: \`Feng shui score meter, \${score} points, circular progress bar, golden and red colors, Chinese calligraphy style numbers\`,
+      usage: 'score_display'
+    },
+    {
+      type: 'direction_compass',
+      prompt: \`Traditional Chinese compass, feng shui direction indicator, ancient bronze style, pointing \${analysisData.direction || '南'}, mystical glow\`,
+      usage: 'direction_indicator'
+    },
+    {
+      type: 'improvement_icons',
+      prompt: \`Feng shui improvement symbols, plants, mirrors, crystals, water elements, modern minimalist icons, golden outline\`,
+      usage: 'suggestion_graphics'
+    }
+  ];
+  
+  return {
+    image_prompts: prompts,
+    style_guide: {
+      primary_colors: ['#DAA520', '#CD853F', '#B8860B'],
+      secondary_colors: ['#2F4F4F', '#556B2F', '#8B4513'],
+      font_suggestions: ['华文中宋', 'PingFang SC', 'Noto Sans CJK'],
+      animation_style: 'smooth, elegant, 0.8s duration'
+    }
+  };
+}
+
+return generateImagePrompts(visual_generator.output, feng_shui_analysis);
+          `
+        }
+      },
+      {
+        "id": "video_composition",
+        "type": "code",
+        "name": "视频构图设计",
+        "position": {"x": 700, "y": 200},
+        "config": {
+          "language": "javascript",
+          "code": `
+function createVideoComposition(script, visualElements, imagePrompts) {
+  const composition = {
+    video_config: {
+      duration: 60,
+      fps: 30,
+      resolution: '1080x1920', // 竖屏格式
+      format: 'mp4'
+    },
+    scenes: [
+      {
+        id: 'opening',
+        duration: 5,
+        elements: [
+          {
+            type: 'background',
+            source: 'generated_image',
+            prompt: imagePrompts.image_prompts.find(p => p.type === 'background').prompt,
+            animation: 'slow_zoom_in'
+          },
+          {
+            type: 'text',
+            content: script.title,
+            style: {
+              font: '华文中宋',
+              size: 48,
+              color: '#DAA520',
+              position: 'center_top',
+              animation: 'fade_in_from_top'
+            }
+          },
+          {
+            type: 'text',
+            content: script.script.opening,
+            style: {
+              font: 'PingFang SC',
+              size: 32,
+              color: '#FFFFFF',
+              position: 'center',
+              animation: 'fade_in_with_delay'
+            }
+          }
+        ],
+        audio: {
+          voiceover: script.script.opening,
+          background_music: 'traditional_chinese_ambient',
+          volume: 0.3
+        }
+      },
+      {
+        id: 'analysis_display',
+        duration: 45,
+        elements: [
+          {
+            type: 'background',
+            source: 'generated_image',
+            prompt: imagePrompts.image_prompts.find(p => p.type === 'background').prompt,
+            animation: 'parallax_scroll'
+          },
+          {
+            type: 'overlay',
+            source: 'generated_image',
+            prompt: imagePrompts.image_prompts.find(p => p.type === 'overlay').prompt,
+            opacity: 0.6,
+            animation: 'gentle_float'
+          },
+          {
+            type: 'score_meter',
+            source: 'generated_image',
+            prompt: imagePrompts.image_prompts.find(p => p.type === 'score_visual').prompt,
+            position: 'top_right',
+            animation: 'count_up'
+          },
+          {
+            type: 'direction_indicator',
+            source: 'generated_image',
+            prompt: imagePrompts.image_prompts.find(p => p.type === 'direction_compass').prompt,
+            position: 'bottom_left',
+            animation: 'rotate_in'
+          },
+          {
+            type: 'text',
+            content: script.script.content,
+            style: {
+              font: 'PingFang SC',
+              size: 28,
+              color: '#FFFFFF',
+              position: 'bottom_center',
+              background: 'rgba(0,0,0,0.7)',
+              padding: 20,
+              animation: 'typewriter'
+            }
+          },
+          {
+            type: 'improvement_icons',
+            source: 'generated_image',
+            prompt: imagePrompts.image_prompts.find(p => p.type === 'improvement_icons').prompt,
+            position: 'left_side',
+            animation: 'slide_in_sequence'
+          }
+        ],
+        audio: {
+          voiceover: script.script.content,
+          background_music: 'continue',
+          sound_effects: ['gentle_chime', 'page_turn']
+        }
+      },
+      {
+        id: 'call_to_action',
+        duration: 10,
+        elements: [
+          {
+            type: 'background',
+            source: 'gradient',
+            colors: ['#DAA520', '#B8860B'],
+            animation: 'gentle_pulse'
+          },
+          {
+            type: 'text',
+            content: script.script.ending,
+            style: {
+              font: '华文中宋',
+              size: 36,
+              color: '#FFFFFF',
+              position: 'center',
+              weight: 'bold',
+              animation: 'bounce_in'
+            }
+          },
+          {
+            type: 'qr_code',
+            content: 'https://your-website.com',
+            position: 'bottom_right',
+            size: 100,
+            animation: 'fade_in'
+          },
+          {
+            type: 'social_icons',
+            platforms: ['douyin', 'xiaohongshu', 'wechat'],
+            position: 'bottom_center',
+            animation: 'slide_up'
+          }
+        ],
+        audio: {
+          voiceover: script.script.ending,
+          background_music: 'crescendo',
+          sound_effects: ['success_chime']
+        }
+      }
+    ],
+    export_settings: {
+      watermark: {
+        text: 'AI风水大师',
+        position: 'bottom_right',
+        opacity: 0.8,
+        color: '#DAA520'
+      },
+      hashtags: script.tags,
+      description: \`\${script.title} | 专业AI风水分析 | \${script.tags.join(' #')}\`
+    }
+  };
+  
+  return composition;
+}
+
+return createVideoComposition(
+  script_formatter.output,
+  visual_generator.output,
+  image_prompt_generator.output
+);
+          `
+        }
+      },
+      {
+        "id": "platform_optimizer",
+        "type": "code",
+        "name": "平台优化器",
+        "position": {"x": 900, "y": 200},
+        "config": {
+          "language": "javascript",
+          "code": `
+function optimizeForPlatforms(videoComposition, targetPlatforms = ['douyin', 'xiaohongshu', 'kuaishou']) {
+  const platformConfigs = {
+    douyin: {
+      name: '抖音',
+      resolution: '1080x1920',
+      max_duration: 60,
+      hashtag_limit: 20,
+      title_length: 55,
+      optimization: {
+        hook_time: 3, // 前3秒必须抓住注意力
+        engagement_cues: ['点赞', '关注', '评论'],
+        trending_elements: ['热门音乐', '特效'],
+        text_overlay: 'minimal' // 抖音偏爱少文字
+      }
+    },
+    xiaohongshu: {
+      name: '小红书',
+      resolution: '1080x1920',
+      max_duration: 60,
+      hashtag_limit: 10,
+      title_length: 20,
+      optimization: {
+        aesthetic_focus: true,
+        lifestyle_angle: true,
+        tutorial_style: true,
+        text_overlay: 'detailed' // 小红书用户喜欢详细信息
+      }
+    },
+    kuaishou: {
+      name: '快手',
+      resolution: '1080x1920',
+      max_duration: 60,
+      hashtag_limit: 15,
+      title_length: 50,
+      optimization: {
+        authentic_feel: true,
+        practical_value: true,
+        rural_appeal: true
+      }
+    }
+  };
+  
+  const optimizedVersions = {};
+  
+  targetPlatforms.forEach(platform => {
+    const config = platformConfigs[platform];
+    if (!config) return;
+    
+    optimizedVersions[platform] = {
+      ...videoComposition,
+      platform_name: config.name,
+      video_config: {
+        ...videoComposition.video_config,
+        resolution: config.resolution,
+        duration: Math.min(videoComposition.video_config.duration, config.max_duration)
+      },
+      title: videoComposition.export_settings.description.substring(0, config.title_length),
+      hashtags: videoComposition.export_settings.hashtags.slice(0, config.hashtag_limit),
+      platform_specific: {
+        ...config.optimization,
+        posting_tips: getPlatformTips(platform),
+        best_posting_time: getBestPostingTime(platform)
+      }
+    };
+    
+    // 平台特定优化
+    if (platform === 'douyin') {
+      // 抖音：强化前3秒hook
+      optimizedVersions[platform].scenes[0].elements.unshift({
+        type: 'hook_text',
+        content: '🔥 揭秘！你家风水到底好不好？',
+        style: {
+          font: 'PingFang SC',
+          size: 40,
+          color: '#FF6B35',
+          position: 'center',
+          weight: 'bold',
+          animation: 'flash_attention'
+        },
+        duration: 2
+      });
+    } else if (platform === 'xiaohongshu') {
+      // 小红书：增加详细文字说明
+      optimizedVersions[platform].scenes.forEach(scene => {
+        scene.elements.forEach(element => {
+          if (element.type === 'text' && element.style) {
+            element.style.background = 'rgba(255,255,255,0.9)';
+            element.style.color = '#333333';
+            element.style.padding = 15;
+            element.style.border_radius = 10;
+          }
+        });
+      });
+    }
+  });
+  
+  return optimizedVersions;
+}
+
+function getPlatformTips(platform) {
+  const tips = {
+    douyin: [
+      '使用热门音乐提高推荐',
+      '前3秒要有强烈视觉冲击',
+      '适当添加互动问题',
+      '发布时间：19:00-23:00最佳'
+    ],
+    xiaohongshu: [
+      '标题要有吸引力但不夸张',
+      '内容要实用且美观',
+      '多用表情符号',
+      '发布时间：12:00-14:00, 18:00-20:00'
+    ],
+    kuaishou: [
+      '内容要接地气',
+      '强调实用价值',
+      '真实感很重要',
+      '发布时间：18:00-22:00'
+    ]
+  };
+  return tips[platform] || [];
+}
+
+function getBestPostingTime(platform) {
+  const times = {
+    douyin: ['12:00-13:00', '18:00-20:00', '21:00-23:00'],
+    xiaohongshu: ['09:00-11:00', '14:00-16:00', '19:00-21:00'],
+    kuaishou: ['12:00-13:00', '18:00-22:00']
+  };
+  return times[platform] || ['18:00-20:00'];
+}
+
+return optimizeForPlatforms(video_composition.output, ['douyin', 'xiaohongshu', 'kuaishou']);
+          `
+        }
+      },
+      {
+        "id": "content_calendar",
+        "type": "code",
+        "name": "内容日历生成",
+        "position": {"x": 700, "y": 400},
+        "config": {
+          "language": "javascript",
+          "code": `
+function generateContentCalendar(optimizedVideos) {
+  const today = new Date();
+  const calendar = [];
+  
+  // 为每个平台生成一周的发布计划
+  Object.keys(optimizedVideos).forEach((platform, platformIndex) => {
+    const video = optimizedVideos[platform];
+    const platformTips = video.platform_specific;
+    
+    // 为每个平台在一周内安排2-3次发布
+    const postingFrequency = platform === 'douyin' ? 3 : 2; // 抖音发布频率高一些
+    
+    for (let i = 0; i < postingFrequency; i++) {
+      const postDate = new Date(today);
+      postDate.setDate(today.getDate() + (platformIndex * 2) + (i * 3)); // 错开发布时间
+      
+      const bestTimes = platformTips.best_posting_time;
+      const selectedTime = bestTimes[i % bestTimes.length];
+      
+      calendar.push({
+        date: postDate.toISOString().split('T')[0],
+        time: selectedTime,
+        platform: platform,
+        platform_name: video.platform_name,
+        content: {
+          title: video.title,
+          hashtags: video.hashtags,
+          video_config: video.video_config,
+          description: video.export_settings?.description || video.title
+        },
+        tips: platformTips.posting_tips,
+        status: 'scheduled',
+        priority: platform === 'douyin' ? 'high' : 'medium'
+      });
+    }
+  });
+  
+  // 按日期排序
+  calendar.sort((a, b) => new Date(a.date + ' ' + a.time) - new Date(b.date + ' ' + b.time));
+  
+  return {
+    content_calendar: calendar,
+    summary: {
+      total_posts: calendar.length,
+      platforms: Object.keys(optimizedVideos).length,
+      date_range: {
+        start: calendar[0]?.date,
+        end: calendar[calendar.length - 1]?.date
+      },
+      weekly_frequency: {
+        douyin: calendar.filter(item => item.platform === 'douyin').length,
+        xiaohongshu: calendar.filter(item => item.platform === 'xiaohongshu').length,
+        kuaishou: calendar.filter(item => item.platform === 'kuaishou').length
+      }
+    },
+    automation_suggestions: [
+      '设置自动发布工具',
+      '准备7天内容素材库',
+      '监控发布效果数据',
+      '根据数据调整发布时间'
+    ]
+  };
+}
+
+return generateContentCalendar(platform_optimizer.output);
+          `
+        }
+      },
+      {
+        "id": "final_output",
+        "type": "output",
+        "name": "最终输出",
+        "position": {"x": 900, "y": 400},
+        "config": {
+          "output_schema": {
+            "video_script": "formatted_script",
+            "visual_design": "visual_elements",
+            "image_prompts": "ai_image_generation_prompts",
+            "video_composition": "complete_video_structure",
+            "platform_versions": "optimized_for_multiple_platforms",
+            "content_calendar": "7_day_publishing_schedule",
+            "automation_ready": true
+          }
+        }
+      }
+    ],
+    "connections": [
+      {"from": "start_node", "to": "content_analyzer"},
+      {"from": "content_analyzer", "to": "script_formatter"},
+      {"from": "script_formatter", "to": "visual_generator"},
+      {"from": "visual_generator", "to": "image_prompt_generator"},
+      {"from": "script_formatter", "to": "video_composition"},
+      {"from": "image_prompt_generator", "to": "video_composition"},
+      {"from": "visual_generator", "to": "video_composition"},
+      {"from": "video_composition", "to": "platform_optimizer"},
+      {"from": "platform_optimizer", "to": "content_calendar"},
+      {"from": "content_calendar", "to": "final_output"},
+      {"from": "platform_optimizer", "to": "final_output"}
+    ],
+    "triggers": [
+      {
+        "type": "webhook",
+        "name": "风水分析完成触发",
+        "url": "https://your-domain.com/api/video-generation-webhook",
+        "method": "POST",
+        "description": "当用户完成风水分析后自动触发视频生成"
+      },
+      {
+        "type": "scheduled",
+        "name": "定时内容生成",
+        "cron": "0 10 * * *",
+        "description": "每天上午10点自动生成当日内容"
+      }
+    ],
+    "settings": {
+      "auto_execution": true,
+      "error_handling": "retry_3_times",
+      "timeout": 300,
+      "parallel_execution": false,
+      "logging_level": "detailed"
+    }
+  },
+  "usage_guide": {
+    "setup_steps": [
+      "1. 在Coze平台导入此工作流JSON文件",
+      "2. 配置必要的API密钥（GPT-4、图像生成服务）",
+      "3. 测试工作流的每个节点",
+      "4. 设置Webhook连接到您的风水网站",
+      "5. 配置自动发布到各社交平台的API"
+    ],
+    "input_example": {
+      "feng_shui_analysis": {
+        "score": 78,
+        "level": "中吉格局",
+        "summary": "整体风水格局良好，财位明确，需要注意卧室门对厕所门的问题",
+        "suggestions": [
+          "在卧室门挂门帘遮挡",
+          "在财位摆放绿色植物",
+          "调整床头朝向"
+        ],
+        "room_type": "三室一厅",
+        "direction": "坐北朝南",
+        "areas": {
+          "score_area": {"score": 8, "description": "评分良好"},
+          "direction_area": {"score": 9, "description": "朝向极佳"},
+          "layout_area": {"score": 7, "description": "布局合理"},
+          "optimization_area": {"score": 6, "description": "有改善空间"},
+          "timing_area": {"score": 8, "description": "时机适宜"},
+          "warnings_area": {"score": 7, "description": "注意事项"}
+        }
+      },
+      "video_style": "professional"
+    },
+    "expected_output": {
+      "video_count": 3,
+      "platforms": ["抖音", "小红书", "快手"],
+      "total_duration": 60,
+      "content_calendar_days": 7,
+      "automation_ready": true
+    }
+  }
+}

@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>风水知识库管理工具</title>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            background: #f9f9f9;
+        }
+        
+        .section h2 {
+            color: #4a5568;
+            margin-top: 0;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #2d3748;
+        }
+        
+        input[type="text"], textarea, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input[type="text"]:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        textarea {
+            height: 120px;
+            resize: vertical;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+        }
+        
+        .output {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+            margin-top: 20px;
+        }
+        
+        .tips {
+            background: #e6fffa;
+            border-left: 4px solid #38b2ac;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏮 风水知识库管理工具</h1>
+        
+        <div class="tips">
+            <strong>💡 使用说明：</strong>
+            <ul>
+                <li>将PDF书籍内容逐章节录入到对应分类中</li>
+                <li>点击"生成代码"按钮会生成JavaScript代码</li>
+                <li>复制生成的代码到 <code>src/data/fengshui-knowledge-base.js</code> 文件中</li>
+                <li>建议按照书籍章节顺序逐步添加内容</li>
+            </ul>
+        </div>
+        
+        <div class="section">
+            <h2>📚 基础理论</h2>
+            <div class="grid">
+                <div class="form-group">
+                    <label for="yinyang">阴阳理论</label>
+                    <textarea id="yinyang" placeholder="请输入阴阳理论相关内容..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="wuxing">五行学说</label>
+                    <textarea id="wuxing" placeholder="请输入五行学说相关内容..."></textarea>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>🔯 八卦知识</h2>
+            <div class="form-group">
+                <label for="bagua">八卦详解</label>
+                <textarea id="bagua" placeholder="请输入八卦相关内容..."></textarea>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>🏠 住宅风水</h2>
+            <div class="grid">
+                <div class="form-group">
+                    <label for="layout">房间布局</label>
+                    <textarea id="layout" placeholder="请输入房间布局相关内容..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="doorwindow">门窗朝向</label>
+                    <textarea id="doorwindow" placeholder="请输入门窗朝向相关内容..."></textarea>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>💼 办公风水</h2>
+            <div class="form-group">
+                <label for="office">办公室风水</label>
+                <textarea id="office" placeholder="请输入办公室风水相关内容..."></textarea>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>📖 经典案例</h2>
+            <div class="form-group">
+                <label for="case-title">案例标题</label>
+                <input type="text" id="case-title" placeholder="请输入案例标题...">
+            </div>
+            <div class="form-group">
+                <label for="case-desc">案例描述</label>
+                <textarea id="case-desc" placeholder="请输入案例描述..."></textarea>
+            </div>
+            <div class="form-group">
+                <label for="case-analysis">风水分析</label>
+                <textarea id="case-analysis" placeholder="请输入风水分析..."></textarea>
+            </div>
+            <div class="form-group">
+                <label for="case-solution">解决方案</label>
+                <textarea id="case-solution" placeholder="请输入解决方案..."></textarea>
+            </div>
+            <div class="form-group">
+                <label for="case-source">来源页码</label>
+                <input type="text" id="case-source" placeholder="如：《周易今注今译》第123页">
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin: 30px 0;">
+            <button class="btn" onclick="generateCode()">🔧 生成知识库代码</button>
+            <button class="btn btn-secondary" onclick="clearAll()">🗑️ 清空所有内容</button>
+        </div>
+        
+        <div id="output" class="output" style="display: none;"></div>
+    </div>
+    
+    <script>
+        function generateCode() {
+            const data = {
+                yinyang: document.getElementById('yinyang').value,
+                wuxing: document.getElementById('wuxing').value,
+                bagua: document.getElementById('bagua').value,
+                layout: document.getElementById('layout').value,
+                doorwindow: document.getElementById('doorwindow').value,
+                office: document.getElementById('office').value,
+                caseTitle: document.getElementById('case-title').value,
+                caseDesc: document.getElementById('case-desc').value,
+                caseAnalysis: document.getElementById('case-analysis').value,
+                caseSolution: document.getElementById('case-solution').value,
+                caseSource: document.getElementById('case-source').value
+            };
+            
+            const code = `// 风水知识库 - 基于《周易今注今译》等经典著作
+export const fengshuiKnowledgeBase = {
+  // 基础理论
+  basicTheory: {
+    yinYang: {
+      title: "阴阳理论",
+      content: [
+                 ${data.yinyang ? `"${data.yinyang.replace(/"/g, '\\"').replace(/\n/g, '\\n")}"` : '"阴阳是中国古代哲学的重要概念..."'}
+      ],
+      examples: [],
+      applications: []
+    },
+    wuXing: {
+      title: "五行学说",
+      content: [
+                 ${data.wuxing ? `"${data.wuxing.replace(/"/g, '\\"').replace(/\n/g, '\\n")}"` : '"五行相生相克，是风水学的基础..."'}
+      ],
+      elements: ["金", "木", "水", "火", "土"],
+      relationships: {
+        generate: "金生水，水生木，木生火，火生土，土生金",
+        overcome: "金克木，木克土，土克水，水克火，火克金"
+      }
+    }
+  },
+  
+  // 八卦知识
+  bagua: {
+    theory: {
+      title: "八卦理论",
+      content: [
+                 ${data.bagua ? `"${data.bagua.replace(/"/g, '\\"').replace(/\n/g, '\\n")}"` : '"八卦是《周易》的核心概念..."'}
+      ]
+    },
+    eightGua: {
+      qian: { name: "乾", symbol: "☰", element: "金", direction: "西北", meaning: "天" },
+      kun: { name: "坤", symbol: "☷", element: "土", direction: "西南", meaning: "地" },
+      zhen: { name: "震", symbol: "☳", element: "木", direction: "东", meaning: "雷" },
+      xun: { name: "巽", symbol: "☴", element: "木", direction: "东南", meaning: "风" },
+      kan: { name: "坎", symbol: "☵", element: "水", direction: "北", meaning: "水" },
+      li: { name: "离", symbol: "☲", element: "火", direction: "南", meaning: "火" },
+      gen: { name: "艮", symbol: "☶", element: "土", direction: "东北", meaning: "山" },
+      dui: { name: "兑", symbol: "☱", element: "金", direction: "西", meaning: "泽" }
+    }
+  },
+  
+  // 住宅风水
+  residentialFengshui: {
+    roomLayout: {
+      title: "房间布局",
+      content: [
+        ${data.layout ? `"${data.layout.replace(/"/g, '\\"').replace(/\n/g, '\\n")},\n        ("` : '"房间布局要遵循风水原理..."'}
+      ]
+    },
+    doorWindow: {
+      title: "门窗朝向",
+      content: [
+        ${data.doorwindow ? `"${data.doorwindow.replace(/"/g, '\\"').replace(/\n/g, '\\n")},\n        ("` : '"门窗朝向影响气场流通..."'}
+      ]
+    }
+  },
+  
+  // 办公风水
+  officeFengshui: {
+    general: {
+      title: "办公室风水",
+      content: [
+        ${data.office ? `"${data.office.replace(/"/g, '\\"').replace(/\n/g, '\\n")},\n        ("` : '"办公室风水影响事业运势..."'}
+      ]
+    }
+  },
+  
+  // 经典案例
+  classicCases: [
+    ${data.caseTitle ? `{
+      title: "${data.caseTitle}",
+      description: "${data.caseDesc}",
+      analysis: "${data.caseAnalysis}",
+      solution: "${data.caseSolution}",
+      source: "${data.caseSource}"
+    }` : `{
+      title: "经典案例",
+      description: "案例描述",
+      analysis: "风水分析",
+      solution: "解决方案",
+      source: "来源"
+    }`}
+  ]
+};
+
+// 知识搜索功能
+export function searchKnowledge(keyword) {
+  const results = [];
+  
+  function searchInObject(obj, path = '') {
+    for (const [key, value] of Object.entries(obj)) {
+      const currentPath = path ? \`\${path}.\${key}\` : key;
+      
+      if (typeof value === 'string' && value.toLowerCase().includes(keyword.toLowerCase())) {
+        results.push({
+          path: currentPath,
+          content: value,
+          type: 'text'
+        });
+      } else if (Array.isArray(value)) {
+        value.forEach((item, index) => {
+          if (typeof item === 'string' && item.toLowerCase().includes(keyword.toLowerCase())) {
+            results.push({
+              path: \`\${currentPath}[\${index}]\`,
+              content: item,
+              type: 'array_item'
+            });
+          }
+        });
+      } else if (typeof value === 'object' && value !== null) {
+        searchInObject(value, currentPath);
+      }
+    }
+  }
+  
+  searchInObject(fengshuiKnowledgeBase);
+  return results;
+}
+
+// 获取随机风水小贴士
+export function getRandomTip() {
+  const allTips = [];
+  
+  function collectTips(obj) {
+    for (const value of Object.values(obj)) {
+      if (typeof value === 'object' && value !== null) {
+        if (Array.isArray(value.content)) {
+          allTips.push(...value.content);
+        } else {
+          collectTips(value);
+        }
+      }
+    }
+  }
+  
+  collectTips(fengshuiKnowledgeBase);
+  
+  if (allTips.length > 0) {
+    return allTips[Math.floor(Math.random() * allTips.length)];
+  }
+  
+  return "学习风水，从理解阴阳五行开始。";
+}`;
+            
+            document.getElementById('output').innerHTML = code;
+            document.getElementById('output').style.display = 'block';
+            
+            // 滚动到输出区域
+            document.getElementById('output').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function clearAll() {
+            if (confirm('确定要清空所有内容吗？')) {
+                const inputs = document.querySelectorAll('input[type="text"], textarea');
+                inputs.forEach(input => input.value = '');
+                document.getElementById('output').style.display = 'none';
+            }
+        }
+        
+        // 自动保存到localStorage
+        document.addEventListener('input', function(e) {
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+                localStorage.setItem('fengshui-' + e.target.id, e.target.value);
+            }
+        });
+        
+        // 页面加载时恢复数据
+        window.addEventListener('load', function() {
+            const inputs = document.querySelectorAll('input[type="text"], textarea');
+            inputs.forEach(input => {
+                const saved = localStorage.getItem('fengshui-' + input.id);
+                if (saved) {
+                    input.value = saved;
+                }
+            });
+        });
+    </script>
+</body>
+</html> 

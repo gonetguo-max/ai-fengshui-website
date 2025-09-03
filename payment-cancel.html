@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>支付取消 - 风水大师</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d1810 100%);
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(218, 165, 32, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(220, 20, 60, 0.1) 0%, transparent 50%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+        }
+        
+        .cancel-container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .cancel-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+            animation: shakeX 0.8s ease-out;
+        }
+        
+        @keyframes shakeX {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        
+        h1 {
+            color: #ff6b6b;
+            margin-bottom: 20px;
+            font-size: 2rem;
+        }
+        
+        .message {
+            margin-bottom: 30px;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .benefits {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: left;
+        }
+        
+        .benefits h3 {
+            color: #4CAF50;
+            margin-bottom: 15px;
+        }
+        
+        .benefits ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .benefits li {
+            margin: 8px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .benefits li::before {
+            content: "✓";
+            color: #4CAF50;
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            font-weight: 500;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+        }
+        
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(76, 175, 80, 0.3);
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="cancel-container">
+        <div class="cancel-icon">❌</div>
+        <h1>支付已取消</h1>
+        <div class="message">
+            <p>您已取消了支付过程，没有产生任何费用。</p>
+            <p>您仍然可以继续使用我们的免费服务。</p>
+        </div>
+        
+        <div class="benefits">
+            <h3>考虑升级账户的理由：</h3>
+            <ul>
+                <li>获得更详细的专业风水分析</li>
+                <li>支持户型图AI智能识别</li>
+                <li>专业PDF格式报告导出</li>
+                <li>个性化改善建议和时间择吉</li>
+                <li>优先客服支持和咨询服务</li>
+            </ul>
+        </div>
+        
+        <div class="action-buttons">
+            <a href="/" class="btn btn-primary">返回首页</a>
+            <button onclick="showPricing()" class="btn btn-success">重新查看价格</button>
+            <a href="/contact" class="btn btn-secondary">联系客服</a>
+        </div>
+    </div>
+
+    <script>
+        function showPricing() {
+            // 返回首页并显示价格模态框
+            localStorage.setItem('showPricing', 'true');
+            window.location.href = '/';
+        }
+        
+        // 自动跳转倒计时（可选）
+        let countdown = 10;
+        function startCountdown() {
+            const countdownElement = document.createElement('div');
+            countdownElement.style.cssText = `
+                margin-top: 20px; 
+                color: rgba(255, 255, 255, 0.6); 
+                font-size: 14px;
+            `;
+            countdownElement.innerHTML = `${countdown}秒后自动返回首页`;
+            document.querySelector('.cancel-container').appendChild(countdownElement);
+            
+            const timer = setInterval(() => {
+                countdown--;
+                countdownElement.innerHTML = `${countdown}秒后自动返回首页`;
+                
+                if (countdown <= 0) {
+                    clearInterval(timer);
+                    window.location.href = '/';
+                }
+            }, 1000);
+        }
+        
+        // 可以启用自动跳转
+        // startCountdown();
+    </script>
+</body>
+</html>
