@@ -1812,12 +1812,8 @@ ${getUpgradeSection(result)}
                 hasImage: !!result.formData?.photo 
             });
             
-            // 如果是免费用户，显示邮箱收集弹窗
-            if (result.userTier === 'FREE') {
-                setTimeout(() => {
-                    showEmailCollector();
-                }, 3000); // 3秒后显示
-            }
+            // 移除自动邮箱收集弹窗 - 已整合到升级流程中
+            // 免费用户的邮箱收集现在在升级按钮点击时触发
             
             resultSection.style.display = 'block';
             resultSection.scrollIntoView({ behavior: 'smooth' });
@@ -1874,34 +1870,44 @@ ${getUpgradeSection(result)}
 
         // 免费版升级提示
         function getFreeVersionPrompt(type) {
-            const currentLang = window.i18nManager ? window.i18nManager.getCurrentLanguage() : 'zh';
+            // 改进语言检测：优先检查DOM语言属性
+            let currentLang = 'zh'; // 默认中文
             
-            // 使用国际化系统
-            function t(key) {
-                if (window.i18nManager) {
-                    return window.i18nManager.t(key);
-                }
-                // 降级处理
-                const fallback = {
-                    'zh': {
-                        'direction': '\n\n🔓 升级至Basic版($3.99)解锁完整朝向分析',
-                        'layout': '\n\n🔓 升级至Professional版($4.99)解锁详细布局方案',
-                        'action': '\n\n🔓 升级至Professional版($4.99)获取全部改善建议',
-                        'notes': '\n\n🔓 升级至Master版($29.99)获取专业风水提醒',
-                        'default': '\n\n🔓 升级解锁更多详细内容'
-                    },
-                    'en': {
-                        'direction': '\n\n🔓 Upgrade to Basic ($3.99) for Complete Orientation Analysis',
-                        'layout': '\n\n🔓 Upgrade to Professional ($4.99) for Detailed Layout Plans',
-                        'action': '\n\n🔓 Upgrade to Professional ($4.99) for Complete Improvement Suggestions',
-                        'notes': '\n\n🔓 Upgrade to Master ($29.99) for Professional Feng Shui Insights',
-                        'default': '\n\n🔓 Upgrade to unlock more detailed content'
-                    }
-                };
-                return fallback[currentLang] && fallback[currentLang][key] ? fallback[currentLang][key] : fallback[currentLang]['default'];
+            // 方法1：检查HTML lang属性
+            if (document.documentElement.lang && document.documentElement.lang.startsWith('en')) {
+                currentLang = 'en';
+            }
+            // 方法2：检查i18nManager
+            else if (window.i18nManager && window.i18nManager.getCurrentLanguage) {
+                currentLang = window.i18nManager.getCurrentLanguage();
+            }
+            // 方法3：检查localStorage
+            else if (localStorage.getItem('preferred-language') === 'en') {
+                currentLang = 'en';
             }
             
-            return t(type);
+            console.log('getFreeVersionPrompt currentLang:', currentLang); // 调试用
+            
+            // 直接使用语言映射
+            const prompts = {
+                'zh': {
+                    'direction': '\n\n🔓 升级至Basic版($3.99)解锁完整朝向分析',
+                    'layout': '\n\n🔓 升级至Professional版($4.99)解锁详细布局方案',
+                    'action': '\n\n🔓 升级至Professional版($4.99)获取全部改善建议',
+                    'notes': '\n\n🔓 升级至Master版($29.99)获取专业风水提醒',
+                    'default': '\n\n🔓 升级解锁更多详细内容'
+                },
+                'en': {
+                    'direction': '\n\n🔓 Upgrade to Basic ($3.99) for Complete Orientation Analysis',
+                    'layout': '\n\n🔓 Upgrade to Professional ($4.99) for Detailed Layout Plans',
+                    'action': '\n\n🔓 Upgrade to Professional ($4.99) for Complete Improvement Suggestions',
+                    'notes': '\n\n🔓 Upgrade to Master ($29.99) for Professional Feng Shui Insights',
+                    'default': '\n\n🔓 Upgrade to unlock more detailed content'
+                }
+            };
+            
+            const langPrompts = prompts[currentLang] || prompts['zh'];
+            return langPrompts[type] || langPrompts['default'];
         }
 
         // 智能提取朝向分析
@@ -2295,8 +2301,8 @@ ${getUpgradeSection(result)}
             
             // 直接显示联系信息，不需要确认框
             const contactMsg = isEn ?
-                `Upgrade to ${tierNames[tier]} (${prices[tier]})\n\nPayment system integration in progress.\n\nPlease contact support for manual upgrade:\n📧 Email: support@aifengshui.com\n💬 WeChat: fengshui-ai\n\n🚀 Coming Soon: Automatic payment system!` :
-                `升级到${tierNames[tier]} (${prices[tier]})\n\n支付系统正在集成中。\n\n请联系客服进行手动升级：\n📧 邮箱：support@aifengshui.com\n💬 微信：fengshui-ai\n\n🚀 Coming Soon: 自动支付系统即将上线！`;
+                `Upgrade to ${tierNames[tier]} (${prices[tier]})\n\nPayment system integration in progress.\n\nPlease contact support for manual upgrade:\n📧 Email: 15101623@qq.com\n💬 WeChat: Please email for WeChat ID\n\n🚀 Coming Soon: Automatic payment system!` :
+                `升级到${tierNames[tier]} (${prices[tier]})\n\n支付系统正在集成中。\n\n请联系客服进行手动升级：\n📧 邮箱：15101623@qq.com\n💬 微信：请邮件联系获取微信号\n\n🚀 Coming Soon: 自动支付系统即将上线！`;
                 
                 // 创建更友好的弹窗
                 const modal = document.createElement('div');
@@ -2309,7 +2315,7 @@ ${getUpgradeSection(result)}
                 modal.innerHTML = `
                     <div style="
                         background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-                        padding: 30px; border-radius: 15px; max-width: 400px; 
+                        padding: 30px; border-radius: 15px; max-width: 450px; 
                         color: #f4f4f4; text-align: center; border: 2px solid #DAA520;
                         box-shadow: 0 10px 30px rgba(218, 165, 32, 0.3);
                     ">
@@ -2319,17 +2325,96 @@ ${getUpgradeSection(result)}
                         <p style="line-height: 1.6; margin-bottom: 20px; white-space: pre-line;">
                             ${contactMsg}
                         </p>
-                        <button onclick="this.closest('div').parentElement.remove()" style="
-                            background: linear-gradient(45deg, #DAA520, #B8860B);
-                            color: white; border: none; padding: 10px 20px;
-                            border-radius: 25px; cursor: pointer; font-weight: bold;
-                        ">
-                            ${isEn ? 'Got it!' : '我知道了'}
-                        </button>
+                        
+                        <div style="margin: 20px 0; padding: 15px; background: rgba(218, 165, 32, 0.1); border-radius: 10px; text-align: left;">
+                            <p style="margin-bottom: 10px; font-weight: bold; color: #DAA520;">
+                                ${isEn ? '📧 Get notified when payment is ready:' : '📧 支付系统上线时通知您：'}
+                            </p>
+                            <input type="email" id="upgrade-email" placeholder="${isEn ? 'Your email address' : '您的邮箱地址'}" style="
+                                width: 100%; padding: 8px; border: 1px solid #DAA520; 
+                                border-radius: 5px; background: #2d2d2d; color: #f4f4f4;
+                                margin-bottom: 10px;
+                            ">
+                            <p style="font-size: 12px; color: #999; margin: 0;">
+                                ${isEn ? 'Optional - We\'ll email you when automatic payment is available' : '可选 - 自动支付上线时我们会邮件通知您'}
+                            </p>
+                        </div>
+                        
+                        <div style="display: flex; gap: 10px; justify-content: center;">
+                            <button onclick="saveEmailAndClose()" style="
+                                background: linear-gradient(45deg, #DAA520, #B8860B);
+                                color: white; border: none; padding: 10px 20px;
+                                border-radius: 25px; cursor: pointer; font-weight: bold;
+                            ">
+                                ${isEn ? 'Save & Close' : '保存并关闭'}
+                            </button>
+                            <button onclick="this.closest('div').parentElement.remove()" style="
+                                background: #666; color: white; border: none; padding: 10px 20px;
+                                border-radius: 25px; cursor: pointer;
+                            ">
+                                ${isEn ? 'Skip' : '跳过'}
+                            </button>
+                        </div>
                     </div>
                 `;
                 
                 document.body.appendChild(modal);
+                
+                // 添加全局函数
+                window.saveEmailAndClose = function() {
+                    const email = document.getElementById('upgrade-email').value.trim();
+                    
+                    if (email) {
+                        // 简单邮箱验证
+                        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                        if (!emailRegex.test(email)) {
+                            alert(isEn ? 'Please enter a valid email address' : '请输入有效的邮箱地址');
+                            return;
+                        }
+                        
+                        // 保存到localStorage（可以后续改为发送到服务器）
+                        const savedEmails = JSON.parse(localStorage.getItem('upgrade_emails') || '[]');
+                        if (!savedEmails.includes(email)) {
+                            savedEmails.push(email);
+                            localStorage.setItem('upgrade_emails', JSON.stringify(savedEmails));
+                        }
+                        
+                        // 记录升级意向
+                        const upgradeIntentions = JSON.parse(localStorage.getItem('upgrade_intentions') || '[]');
+                        upgradeIntentions.push({
+                            email: email,
+                            tier: tier,
+                            price: prices[tier],
+                            timestamp: new Date().toISOString()
+                        });
+                        localStorage.setItem('upgrade_intentions', JSON.stringify(upgradeIntentions));
+                        
+                        console.log('升级意向已记录:', { email, tier, price: prices[tier] });
+                    }
+                    
+                    // 关闭弹窗
+                    modal.remove();
+                    
+                    // 显示感谢信息
+                    if (email) {
+                        const thankYouMsg = isEn ?
+                            '✅ Thank you! We\'ll notify you when automatic payment is available.' :
+                            '✅ 谢谢！支付系统上线时我们会通知您。';
+                        
+                        // 简单的toast提示
+                        const toast = document.createElement('div');
+                        toast.style.cssText = `
+                            position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+                            background: linear-gradient(45deg, #DAA520, #B8860B); color: white;
+                            padding: 15px 25px; border-radius: 25px; z-index: 10001;
+                            font-weight: bold; box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+                        `;
+                        toast.textContent = thankYouMsg;
+                        document.body.appendChild(toast);
+                        
+                        setTimeout(() => toast.remove(), 3000);
+                    }
+                };
                 
                 // 实际部署时可以替换为:
                 // window.location.href = `/payment?tier=${tier}&price=${prices[tier]}`;
