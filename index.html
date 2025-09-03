@@ -1599,6 +1599,24 @@
                     body: formData // 使用FormData，不需要设置Content-Type
                 });
 
+                console.log('📡 响应状态:', response.status, response.statusText);
+                console.log('📡 响应头:', response.headers.get('content-type'));
+
+                // 检查响应是否成功
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('❌ 服务器错误响应:', errorText);
+                    throw new Error(`Server error: ${response.status} - ${errorText.substring(0, 100)}...`);
+                }
+
+                // 检查是否是JSON响应
+                const contentType = response.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                    const responseText = await response.text();
+                    console.error('❌ 非JSON响应:', responseText);
+                    throw new Error(`Expected JSON but got: ${contentType}. Response: ${responseText.substring(0, 100)}...`);
+                }
+
                 const data = await response.json();
                 console.log('🔍 收到的数据:', data);
                 
